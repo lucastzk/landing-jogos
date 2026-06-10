@@ -1,0 +1,4 @@
+# Normaliza quebras de linha. Scripts shell SEMPRE em LF (senão quebram no Linux).
+* text=auto
+*.sh text eol=lf
+deploy.sh text eol=lf
