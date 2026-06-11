@@ -14,19 +14,11 @@ npm ci
 echo "==> Gerando build de produção"
 npm run build
 
-echo "==> Reiniciando o app (PM2, desacoplado da sessão SSH)"
-# O daemon do pm2 segura os descritores da sessão SSH abertos, e o GitHub Action
-# fica sem conseguir fechar a conexão → marca FALHO mesmo o deploy dando certo.
-# Solução: rodar o restart 100% DESACOPLADO (nohup + background + disown), com
-# TODOS os descritores redirecionados. Aí a sessão SSH fecha limpa e o Action
-# recebe o exit 0. O `sleep` dá tempo do app subir antes da sessão encerrar.
-nohup bash -lc '
-  pm2 delete landing-jogos >/dev/null 2>&1 || true
-  pm2 start ecosystem.config.cjs >/dev/null 2>&1 || pm2 restart landing-jogos >/dev/null 2>&1 || true
-  pm2 save >/dev/null 2>&1 || true
-' >/dev/null 2>&1 </dev/null &
-disown 2>/dev/null || true
-sleep 6
+echo "==> Reiniciando o app (PM2)"
+# Este script roda DESACOPLADO da sessão SSH (o workflow o lança em background),
+# então o pm2 pode rodar normal — não há sessão pra ele prender.
+pm2 delete landing-jogos >/dev/null 2>&1 || true
+pm2 start ecosystem.config.cjs >/dev/null 2>&1 || pm2 restart landing-jogos >/dev/null 2>&1 || true
+pm2 save >/dev/null 2>&1 || true
 
-echo "==> Deploy concluído ✅"
-exit 0
+echo "==> Deploy concluído com sucesso ✅"

@@ -29,8 +29,8 @@ export default async function CheckoutPage() {
               <img
                 src={checkout.logoImage}
                 alt={checkout.brandName}
-                style={{ height: `${checkout.logoHeight}px` }}
-                className="w-auto max-w-[70%] object-contain sm:max-w-[340px]"
+                style={{ maxHeight: `${checkout.logoHeight}px` }}
+                className="h-auto w-auto max-w-[78vw] object-contain sm:max-w-[340px]"
               />
             ) : (
               <span className="font-display text-lg font-extrabold tracking-tight text-bone">

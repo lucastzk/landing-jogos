@@ -30,3 +30,6 @@ next-env.d.ts
 # conteúdo e uploads do painel admin (gerados em runtime)
 /data
 /public/uploads
+
+# log do deploy automático (gerado no VPS)
+/deploy.log
