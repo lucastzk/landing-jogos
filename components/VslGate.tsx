@@ -94,14 +94,12 @@ export default function VslGate({
 
         {/* Gancho */}
         {headline && (
-          <h1 className="text-balance break-words text-center font-display text-[1.5rem] font-extrabold leading-[1.12] tracking-tight text-bone sm:text-[1.9rem]">
+          <h1 className="text-center font-display text-[1.4rem] font-extrabold leading-[1.15] tracking-tight text-bone sm:text-[1.9rem]">
             {headline}
           </h1>
         )}
         {subheadline && (
-          <p className="mx-auto mt-2.5 w-full max-w-sm text-balance text-center text-sm leading-relaxed text-bone/55">
-            {subheadline}
-          </p>
+          <p className="mx-auto mt-2.5 max-w-sm text-center text-sm leading-relaxed text-bone/55">{subheadline}</p>
         )}
 
         {/* Player vertical 9:16 com moldura iluminada */}
