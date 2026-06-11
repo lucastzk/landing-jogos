@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   title: site.meta.title,
   description: site.meta.description,
   applicationName: site.meta.siteName,
-  keywords: ["pack de jogos", "jogos autorais", "500 jogos", "jogos PC", "jogos celular"],
+  keywords: ["produto digital", "acesso imediato", "pagamento único"],
   openGraph: {
     type: "website",
     locale: site.meta.locale,

@@ -9,7 +9,7 @@ export default function Highlights({ highlights }: { highlights: SiteConfig["hig
     <Section id="destaques" className="bg-black">
       <SectionTitle
         index="02"
-        kicker="OS CAMPEÕES"
+        kicker="DESTAQUES"
         title={highlights.title}
         subtitle={highlights.subtitle}
       />
@@ -52,17 +52,6 @@ export default function Highlights({ highlights }: { highlights: SiteConfig["hig
             </div>
           </article>
         ))}
-      </div>
-
-      <div
-        data-reveal
-        className="mt-12 rounded-3xl border border-red-700/30 bg-red-600/[0.07] px-6 py-9 text-center"
-      >
-        <p className="text-2xl font-extrabold tracking-tight text-bone sm:text-3xl">
-          E isso é só a amostra:{" "}
-          <span className="text-gradient-red animate-gradient-pan">+ de 500 jogos no total</span>
-        </p>
-        <p className="mt-2 text-bone/55">Todos os outros entram junto como bônus, sem custo a mais.</p>
       </div>
 
       <div className="mt-12 flex justify-center">

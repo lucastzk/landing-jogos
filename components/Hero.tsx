@@ -95,7 +95,7 @@ export default function Hero({ hero }: { hero: SiteConfig["hero"] }) {
 
 /** Mockup gerado por CSS com tiles flutuando. */
 function MockupPlaceholder() {
-  const tiles = ["🕹️", "🏎️", "🧩", "🗡️", "👾", "⚽", "🚀", "🎯", "💣"];
+  const tiles = ["✨", "📦", "🎯", "⭐", "💡", "🚀", "🔒", "📈", "🎁"];
   const delays = ["0s", "0.5s", "1s", "0.3s", "0.8s", "1.3s", "0.6s", "1.1s", "0.4s"];
   return (
     <div className="p-6">
@@ -106,7 +106,7 @@ function MockupPlaceholder() {
           <span className="h-2.5 w-2.5 rounded-full bg-bone/25" />
         </div>
         <span className="text-xs font-semibold uppercase tracking-widest text-bone/35">
-          +500.pack
+          seu.produto
         </span>
       </div>
       <div className="grid grid-cols-3 gap-3">
@@ -122,9 +122,9 @@ function MockupPlaceholder() {
       </div>
       <div className="mt-4 rounded-2xl border border-red-700/30 bg-red-600/10 px-4 py-3.5 text-center">
         <p className="font-display text-base font-extrabold tracking-tight text-bone">
-          + de 500 jogos no total
+          Seu produto aqui
         </p>
-        <p className="mt-0.5 text-xs text-bone/40">Troque por um print real do seu pack</p>
+        <p className="mt-0.5 text-xs text-bone/40">Troque por uma imagem real do seu produto</p>
       </div>
     </div>
   );
