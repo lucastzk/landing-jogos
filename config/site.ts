@@ -205,22 +205,22 @@ export const site = {
     title: "Por que vale a pena",
     items: [
       {
-        emoji: "⏱️",
+        icon: "clock",
         title: "Economiza o seu tempo",
         text: "Explique como o seu produto poupa tempo ou esforço de quem compra.",
       },
       {
-        emoji: "🎯",
+        icon: "target",
         title: "Resolve o problema certo",
         text: "Mostre, em uma frase, o principal problema que o seu produto resolve.",
       },
       {
-        emoji: "💸",
+        icon: "dollar",
         title: "Vale cada centavo",
         text: "Justifique o valor: o que a pessoa ganha em troca do preço que paga.",
       },
       {
-        emoji: "✅",
+        icon: "sparkles",
         title: "Sem complicação",
         text: "Reforce que é simples começar e usar, do início ao fim.",
       },

@@ -104,7 +104,7 @@ export async function getEditableContent(): Promise<EditableContent> {
     },
     benefits: {
       title: s.benefits.title,
-      items: s.benefits.items.map((i) => ({ emoji: i.emoji, title: i.title, text: i.text })),
+      items: s.benefits.items.map((i) => ({ icon: i.icon, title: i.title, text: i.text })),
     },
     testimonials: {
       title: s.testimonials.title,
@@ -281,7 +281,7 @@ export async function saveEditableContent(patch: EditableContent): Promise<void>
     benefits: {
       title: S(patch?.benefits?.title),
       items: (patch?.benefits?.items ?? []).map((i) => ({
-        emoji: S(i?.emoji),
+        icon: S(i?.icon),
         title: S(i?.title),
         text: S(i?.text),
       })),

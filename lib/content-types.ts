@@ -48,7 +48,7 @@ export type EditableContent = {
   };
   benefits: {
     title: string;
-    items: { emoji: string; title: string; text: string }[];
+    items: { icon: string; title: string; text: string }[];
   };
   testimonials: {
     title: string;

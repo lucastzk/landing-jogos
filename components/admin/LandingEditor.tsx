@@ -132,10 +132,9 @@ export default function LandingEditor({ value, onChange }: Props) {
         <ItemList
           items={value.benefits.items}
           onChange={(items) => sec("benefits", { items })}
-          empty={() => ({ emoji: "✅", title: "", text: "" })}
+          empty={() => ({ icon: "sparkles", title: "", text: "" })}
           render={(i, set) => (
             <>
-              <Txt label="Emoji" value={i.emoji} onChange={(v) => set({ emoji: v })} />
               <Txt label="Título" value={i.title} onChange={(v) => set({ title: v })} />
               <Area label="Texto" value={i.text} onChange={(v) => set({ text: v })} rows={2} />
             </>

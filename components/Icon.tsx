@@ -4,9 +4,39 @@ type IconName =
   | "devices"
   | "play"
   | "infinity"
-  | "refresh";
+  | "refresh"
+  | "clock"
+  | "target"
+  | "dollar"
+  | "sparkles";
 
 const paths: Record<IconName, React.ReactNode> = {
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7.5V12l3 2" />
+    </>
+  ),
+  target: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="5" />
+      <circle cx="12" cy="12" r="1.5" />
+    </>
+  ),
+  dollar: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 6.5v11" />
+      <path d="M14.7 8.8c-.5-.6-1.4-1-2.7-1-1.7 0-3 .8-3 2s1.3 2 3 2 3 .8 3 2-1.3 2-3 2c-1.3 0-2.2-.4-2.7-1" />
+    </>
+  ),
+  sparkles: (
+    <>
+      <path d="M12 3l1.6 4.7L18 9.5l-4.4 1.8L12 16l-1.6-4.7L6 9.5l4.4-1.8z" />
+      <path d="M18.5 13.5l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z" />
+    </>
+  ),
   package: (
     <>
       <path d="m7.5 4.27 9 5.15" />
