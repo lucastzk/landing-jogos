@@ -27,4 +27,5 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           script: |
             cd ${{ secrets.VPS_PATH }}
+            git fetch origin main && git reset --hard origin/main
             ./deploy.sh
