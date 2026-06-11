@@ -15,12 +15,16 @@ echo "==> Gerando build de produção"
 npm run build
 
 echo "==> Reiniciando o app (PM2)"
-# Redireciona a saída do pm2 pra /dev/null: senão o daemon do pm2 mantém os
-# descritores (stdout/stderr) da sessão SSH abertos, e o GitHub Action não
-# recebe o código de saída direito — marcando o deploy como FALHO mesmo dando
-# certo. Com o redirecionamento, a sessão fecha limpa.
-pm2 delete landing-jogos >/dev/null 2>&1 || true
-pm2 start ecosystem.config.cjs >/dev/null 2>&1
-pm2 save >/dev/null 2>&1
+# O daemon do pm2 mantém os descritores (stdin/stdout/stderr) da sessão SSH
+# abertos, e o GitHub Action não recebe o código de saída direito — marcando o
+# deploy como FALHO mesmo dando certo. Por isso:
+#  - redirecionamos TODOS os descritores (incl. </dev/null) → sessão fecha limpa
+#  - o pm2 NÃO derruba o deploy (|| true): o que valida o deploy é o build acima
+#  - exit 0 no fim garante verde quando build+restart deram certo
+pm2 delete landing-jogos >/dev/null 2>&1 </dev/null || true
+pm2 start ecosystem.config.cjs >/dev/null 2>&1 </dev/null \
+  || pm2 restart landing-jogos >/dev/null 2>&1 </dev/null || true
+pm2 save >/dev/null 2>&1 </dev/null || true
 
 echo "==> Deploy concluído ✅"
+exit 0

@@ -48,12 +48,20 @@ export default function VslGate({
     }
   }, [videoUrl, revealAfterSeconds, isFile]);
 
-  const toggleMute = () => {
+  // Clique no vídeo (ou no ícone): se está mudo, ATIVA o som e REINICIA o vídeo
+  // (pra ouvir o áudio do começo). Se já está com som, apenas muta.
+  const handleClick = () => {
     const v = videoRef.current;
     if (!v) return;
-    v.muted = !v.muted;
-    setMuted(v.muted);
-    if (!v.muted && v.paused) v.play().catch(() => {});
+    if (v.muted) {
+      v.muted = false;
+      v.currentTime = 0; // reinicia do começo
+      setMuted(false);
+      v.play().catch(() => {});
+    } else {
+      v.muted = true;
+      setMuted(true);
+    }
   };
 
   return (
@@ -125,24 +133,25 @@ export default function VslGate({
                   muted
                   playsInline
                   onEnded={() => setRevealed(true)}
-                  onClick={toggleMute}
+                  onClick={handleClick}
                   className="h-full w-full cursor-pointer object-cover"
                 />
                 {muted && (
                   <button
                     type="button"
-                    onClick={toggleMute}
-                    className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/25"
-                    aria-label="Ativar som"
+                    onClick={handleClick}
+                    className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/35"
+                    aria-label="Ativar som e reiniciar o vídeo"
                   >
-                    <span className="flex h-16 w-16 items-center justify-center rounded-full bg-black/55 ring-1 ring-white/25 backdrop-blur">
-                      <svg className="h-7 w-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M11 5 6 9H2v6h4l5 4V5z" />
-                        <line x1="23" y1="9" x2="17" y2="15" />
-                        <line x1="17" y1="9" x2="23" y2="15" />
+                    {/* Ícone de mute nas cores do site: speaker + barra, círculo vermelho pulsante */}
+                    <span className="relative flex h-[4.75rem] w-[4.75rem] items-center justify-center rounded-full bg-gradient-to-br from-red-600 to-red-500 shadow-red ring-4 ring-red-500/15">
+                      <span className="absolute inset-0 animate-ping rounded-full bg-red-500/40" aria-hidden="true" />
+                      <svg className="relative h-9 w-9 text-white" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M11 5 6 9H3a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h3l5 4V5z" fill="currentColor" />
+                        <path d="M3.2 3.2 20.8 20.8" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
                       </svg>
                     </span>
-                    <span className="animate-pulse rounded-full bg-black/55 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-white backdrop-blur">
+                    <span className="rounded-full border border-red-500/40 bg-black/65 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-bone backdrop-blur">
                       {unmuteHint}
                     </span>
                   </button>
