@@ -11,21 +11,21 @@ export default function StickyMobileCta({ site }: { site: SiteConfig }) {
       style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
     >
       <div className="mx-auto flex max-w-md items-center justify-between gap-2.5">
-        {/* Preço — largura fixa, não some nem encolhe o botão */}
+        {/* Preço — não encolhe; compacto pra sobrar largura pro botão */}
         <div className="shrink-0 leading-none">
           {site.offer.fullPrice && (
-            <p className="text-[0.68rem] text-bone/40 line-through decoration-red-500">{site.offer.fullPrice}</p>
+            <p className="text-[0.62rem] text-bone/40 line-through decoration-red-500">{site.offer.fullPrice}</p>
           )}
           <p className="text-lg font-extrabold tracking-tight text-bone">{site.offer.currentPrice}</p>
-          <p className="mt-0.5 text-[0.6rem] font-medium uppercase tracking-wide text-bone/40">pagamento único</p>
         </div>
-        {/* Botão — ocupa o resto; texto trunca com reticências em vez de estourar */}
+        {/* Botão — ocupa o resto. overflow-hidden + min-w-0/truncate garantem que
+            NUNCA estoure a tela (em último caso o texto trunca, nunca corta fora). */}
         <a
           href={site.cta.checkoutUrl}
           {...externalProps}
-          className="group flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-red-700 via-red-600 to-red-500 px-4 py-3.5 text-center text-sm font-bold tracking-tight text-white shadow-red-soft transition-transform active:scale-[0.98]"
+          className="group flex min-w-0 flex-1 items-center justify-center gap-1.5 overflow-hidden rounded-full bg-gradient-to-r from-red-700 via-red-600 to-red-500 px-4 py-3.5 text-sm font-bold tracking-tight text-white shadow-red-soft transition-transform active:scale-[0.98]"
         >
-          <span className="truncate">{site.cta.label}</span>
+          <span className="min-w-0 truncate">{site.cta.label}</span>
           <svg
             className="h-[18px] w-[18px] shrink-0"
             viewBox="0 0 24 24"
