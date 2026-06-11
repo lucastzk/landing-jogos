@@ -22,7 +22,7 @@ export default async function CheckoutPage() {
 
       {/* Topo */}
       <header className="relative border-b border-line/70">
-        <div className="mx-auto flex max-w-4xl items-center justify-center px-5 py-4 sm:justify-start">
+        <div className="mx-auto flex max-w-4xl items-center justify-center px-5 py-4">
           <Link href="/" className="flex items-center gap-2">
             {checkout.logoImage ? (
               // eslint-disable-next-line @next/next/no-img-element
