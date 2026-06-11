@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
 import { captureTracking, decorateCheckoutLinks } from "@/lib/tracking";
+import { fbTrack } from "@/lib/pixel";
 
 /**
  * Camada de movimento (estilo estúdio):
@@ -47,6 +48,16 @@ export default function Interactions() {
       }
     };
     document.addEventListener("click", onAnchor);
+
+    // ---------- Meta Pixel: clique em "comprar" → InitiateCheckout ----------
+    // Captura TODOS os botões de compra da landing num só lugar (Hero, Oferta,
+    // CTA final, header, barra fixa do mobile): todos são <a> que apontam para
+    // /checkout. Assim rastreamos a intenção de compra sem tocar em cada botão.
+    const onCheckoutClick = (e: Event) => {
+      const a = (e.target as HTMLElement).closest('a[href*="/checkout"]') as HTMLAnchorElement | null;
+      if (a) fbTrack("InitiateCheckout");
+    };
+    document.addEventListener("click", onCheckoutClick);
 
     // ---------- Coleta de elementos ----------
     const parallaxEls = Array.from(document.querySelectorAll<HTMLElement>("[data-parallax]"));
@@ -132,6 +143,7 @@ export default function Interactions() {
     cleanups.push(() => {
       cancelAnimationFrame(rafId);
       document.removeEventListener("click", onAnchor);
+      document.removeEventListener("click", onCheckoutClick);
       window.removeEventListener("resize", onResize);
       bar.remove();
       lenis.destroy();

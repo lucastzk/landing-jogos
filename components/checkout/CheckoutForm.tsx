@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { CheckoutConfig } from "@/config/checkout";
 import {
   formatBRL,
@@ -23,6 +23,7 @@ import type {
   PixData,
 } from "@/lib/checkout-types";
 import { getTracking } from "@/lib/tracking";
+import { fbTrack } from "@/lib/pixel";
 import { CheckoutConfigProvider } from "./CheckoutConfigContext";
 import Field from "./Field";
 import OrderSummary from "./OrderSummary";
@@ -59,6 +60,19 @@ export default function CheckoutForm({ checkout }: { checkout: CheckoutConfig })
     () => checkout.product.priceInCents + (bump && checkout.orderBump.enabled ? checkout.orderBump.priceInCents : 0),
     [bump]
   );
+
+  // Meta Pixel: dispara Purchase UMA vez quando o pagamento é confirmado.
+  const purchaseTracked = useRef(false);
+  useEffect(() => {
+    if (step === "success" && !purchaseTracked.current) {
+      purchaseTracked.current = true;
+      fbTrack("Purchase", {
+        value: amountInCents / 100,
+        currency: "BRL",
+        content_name: checkout.product.name,
+      });
+    }
+  }, [step, amountInCents, checkout.product.name]);
 
   const setCustomerField = (patch: Partial<Customer>) => setCustomer((c) => ({ ...c, ...patch }));
   const setCardField = (patch: Partial<CardData>) => setCard((c) => ({ ...c, ...patch }));
@@ -118,6 +132,14 @@ export default function CheckoutForm({ checkout }: { checkout: CheckoutConfig })
       }
 
       setTransactionId(data.transactionId);
+
+      // Meta Pixel: dados de pagamento enviados (PIX gerado / cartão enviado).
+      fbTrack("AddPaymentInfo", {
+        value: amountInCents / 100,
+        currency: "BRL",
+        content_name: checkout.product.name,
+        payment_method: method,
+      });
 
       if (data.method === "pix" && data.pix) {
         setPix(data.pix);
