@@ -6,6 +6,12 @@ on:
     branches: [main]
   workflow_dispatch: {}
 
+# Roda UM deploy de cada vez (fila). Evita que pushes em sequência disparem
+# deploys simultâneos que se atropelam no VPS (travas de git/npm/pm2 = falha).
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

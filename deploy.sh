@@ -4,8 +4,9 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-echo "==> Baixando alterações (git pull)"
-git pull origin main
+echo "==> Sincronizando com o repositório (fetch + reset)"
+git fetch origin main
+git reset --hard origin/main
 
 echo "==> Instalando dependências"
 npm ci
