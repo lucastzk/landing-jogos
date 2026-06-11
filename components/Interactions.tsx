@@ -122,52 +122,17 @@ export default function Interactions() {
     };
     rafId = requestAnimationFrame(loop);
 
-    // ---------- Reveal ----------
-    // Carregamento normal: IntersectionObserver revela ao rolar (com animação).
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("in-view");
-            io.unobserve(entry.target);
-          }
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
-    );
-    document.querySelectorAll("[data-reveal], .mask").forEach((el) => io.observe(el));
-
-    // Ao VOLTAR de outra página (checkout → Voltar) o observer pode não revelar.
-    // Detectamos back/forward E restauração de cache (bfcache) e revelamos TUDO
-    // na hora — assim nada fica invisível (sem animação nesse caso, tudo bem).
-    const revealAll = () =>
-      document.querySelectorAll("[data-reveal], .mask").forEach((el) => el.classList.add("in-view"));
-    const navEntry = performance.getEntriesByType("navigation")[0] as
-      | PerformanceNavigationTiming
-      | undefined;
-    if (navEntry?.type === "back_forward") revealAll();
-    const onPageShow = (e: PageTransitionEvent) => {
-      if (e.persisted) revealAll();
-    };
-    window.addEventListener("pageshow", onPageShow);
-
-    // Rede de segurança: se depois de 3s NADA tiver sido revelado (o reveal
-    // falhou por completo), revela tudo. Se já houve reveal, não mexe — assim
-    // a animação ao rolar é preservada no uso normal.
-    const safetyTimer = window.setTimeout(() => {
-      if (!document.querySelector("[data-reveal].in-view, .mask.in-view")) revealAll();
-    }, 3000);
+    // OBS.: o "reveal" (aparecer ao rolar) agora é 100% CSS (scroll-driven, em
+    // app/globals.css). Não há lógica de reveal aqui de propósito — é o que
+    // garante que o conteúdo nunca fique invisível nem trave ao voltar de página.
 
     const onResize = () => marquees.forEach((m) => (m.half = m.track.scrollWidth / 2));
     window.addEventListener("resize", onResize);
 
     cleanups.push(() => {
       cancelAnimationFrame(rafId);
-      clearTimeout(safetyTimer);
       document.removeEventListener("click", onAnchor);
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("pageshow", onPageShow);
-      io.disconnect();
       bar.remove();
       lenis.destroy();
     });
