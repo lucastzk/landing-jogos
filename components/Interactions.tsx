@@ -152,11 +152,24 @@ export default function Interactions() {
     };
     window.addEventListener("pageshow", onPageShow);
 
+    // Rede de segurança: se por qualquer motivo o reveal não disparar, garante
+    // que nada fique invisível — revela o que está na tela (ou logo abaixo)
+    // após um tempinho, sem matar a animação do conteúdo bem mais abaixo.
+    const safetyTimer = window.setTimeout(() => {
+      const limit = window.innerHeight + 200;
+      document
+        .querySelectorAll<HTMLElement>("[data-reveal]:not(.in-view), .mask:not(.in-view)")
+        .forEach((el) => {
+          if (el.getBoundingClientRect().top < limit) el.classList.add("in-view");
+        });
+    }, 1000);
+
     const onResize = () => marquees.forEach((m) => (m.half = m.track.scrollWidth / 2));
     window.addEventListener("resize", onResize);
 
     cleanups.push(() => {
       cancelAnimationFrame(rafId);
+      clearTimeout(safetyTimer);
       document.removeEventListener("click", onAnchor);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("pageshow", onPageShow);
