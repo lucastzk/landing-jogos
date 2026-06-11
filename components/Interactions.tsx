@@ -136,6 +136,16 @@ export default function Interactions() {
     );
     document.querySelectorAll("[data-reveal], .mask").forEach((el) => io.observe(el));
 
+    // bfcache: ao VOLTAR do checkout (botão Voltar), o navegador restaura a
+    // página do cache e as animações de reveal NÃO re-disparam — o conteúdo
+    // ficaria invisível. Este handler garante que tudo apareça nesse caso.
+    const onPageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        document.querySelectorAll("[data-reveal], .mask").forEach((el) => el.classList.add("in-view"));
+      }
+    };
+    window.addEventListener("pageshow", onPageShow);
+
     const onResize = () => marquees.forEach((m) => (m.half = m.track.scrollWidth / 2));
     window.addEventListener("resize", onResize);
 
@@ -143,6 +153,7 @@ export default function Interactions() {
       cancelAnimationFrame(rafId);
       document.removeEventListener("click", onAnchor);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("pageshow", onPageShow);
       io.disconnect();
       bar.remove();
       lenis.destroy();
