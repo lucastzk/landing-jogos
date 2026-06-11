@@ -62,6 +62,31 @@ export default function LandingEditor({ value, onChange }: Props) {
         <StrList label="Selos abaixo do vídeo" values={value.vsl.bullets} onChange={(v) => sec("vsl", { bullets: v })} />
       </AdminCard>
 
+      {/* PÁGINA VSL (/vsl) — vídeo-porteiro do anúncio */}
+      <AdminCard title="Página VSL (/vsl) — vídeo-porteiro do anúncio">
+        <p className="mb-1 text-xs leading-relaxed text-bone/50">
+          Use o link <b>/vsl</b> no anúncio. O vídeo vertical roda sozinho (mudo, clique para
+          ativar o som) e o botão que leva à landing só aparece <b>quando o vídeo termina</b>.
+        </p>
+        <Txt label="Título acima do vídeo (opcional)" value={value.vslPage.headline} onChange={(v) => sec("vslPage", { headline: v })} />
+        <MediaField
+          label="Vídeo vertical (URL do YouTube/Vimeo ou arquivo .mp4)"
+          value={value.vslPage.videoUrl}
+          onChange={(url) => sec("vslPage", { videoUrl: url })}
+          kind="any"
+          accept="video/mp4,video/webm"
+          hint="Vertical (9:16). .mp4 é o ideal: autoplay mudo, clique para desmutar e libera o botão no fim do vídeo."
+        />
+        <MediaField label="Capa do vídeo (poster, opcional)" value={value.vslPage.poster} onChange={(url) => sec("vslPage", { poster: url })} />
+        <Txt label="Texto do botão (aparece no fim)" value={value.vslPage.ctaLabel} onChange={(v) => sec("vslPage", { ctaLabel: v })} />
+        <Txt label="Dica de desmutar" value={value.vslPage.unmuteHint} onChange={(v) => sec("vslPage", { unmuteHint: v })} />
+        <Txt
+          label="Liberar botão após X segundos (só YouTube/Vimeo; com .mp4 deixe 0)"
+          value={String(value.vslPage.revealAfterSeconds)}
+          onChange={(v) => sec("vslPage", { revealAfterSeconds: Number(v.replace(/[^\d]/g, "")) || 0 })}
+        />
+      </AdminCard>
+
       {/* DESTAQUES */}
       <AdminCard title="Destaques">
         <Txt label="Título da seção" value={value.highlights.title} onChange={(v) => sec("highlights", { title: v })} />

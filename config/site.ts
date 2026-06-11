@@ -92,6 +92,23 @@ export const site = {
   },
 
   // ----------------------------------------------------------------------
+  //  PÁGINA VSL (/vsl) — vídeo-porteiro para o anúncio. O botão que leva à
+  //  landing só aparece QUANDO O VÍDEO TERMINA. Use um vídeo VERTICAL (.mp4 de
+  //  preferência: autoplay mudo, clique para desmutar e libera o botão no fim).
+  // ----------------------------------------------------------------------
+  vslPage: {
+    headline: "", // título opcional acima do vídeo (vazio = nada)
+    // 👉 Vídeo VERTICAL. Aceita .mp4 (recomendado) ou YouTube/Vimeo.
+    videoUrl: "",
+    poster: "", // capa opcional
+    ctaLabel: "QUERO APROVEITAR A OFERTA", // botão que aparece no fim
+    unmuteHint: "Toque na tela para ativar o som",
+    // Só para YouTube/Vimeo (não dá para detectar o fim): libera o botão após X
+    // segundos — coloque a duração do vídeo. Com .mp4, deixe 0 (usa o fim real).
+    revealAfterSeconds: 0,
+  },
+
+  // ----------------------------------------------------------------------
   // 3. DESTAQUES — principais itens/recursos do seu produto
   // ----------------------------------------------------------------------
   highlights: {

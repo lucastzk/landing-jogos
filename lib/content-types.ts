@@ -26,6 +26,14 @@ export type EditableContent = {
     poster: string;
     bullets: string[];
   };
+  vslPage: {
+    headline: string;
+    videoUrl: string;
+    poster: string;
+    ctaLabel: string;
+    unmuteHint: string;
+    revealAfterSeconds: number;
+  };
   highlights: {
     title: string;
     subtitle: string;

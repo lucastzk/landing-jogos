@@ -77,6 +77,14 @@ export async function getEditableContent(): Promise<EditableContent> {
       poster: s.vsl.poster ?? "",
       bullets: [...s.vsl.bullets],
     },
+    vslPage: {
+      headline: s.vslPage.headline ?? "",
+      videoUrl: s.vslPage.videoUrl ?? "",
+      poster: s.vslPage.poster ?? "",
+      ctaLabel: s.vslPage.ctaLabel,
+      unmuteHint: s.vslPage.unmuteHint,
+      revealAfterSeconds: s.vslPage.revealAfterSeconds ?? 0,
+    },
     highlights: {
       title: s.highlights.title,
       subtitle: s.highlights.subtitle,
@@ -237,6 +245,14 @@ export async function saveEditableContent(patch: EditableContent): Promise<void>
       videoUrl: S(patch?.vsl?.videoUrl),
       poster: S(patch?.vsl?.poster),
       bullets: SA(patch?.vsl?.bullets),
+    },
+    vslPage: {
+      headline: S(patch?.vslPage?.headline),
+      videoUrl: S(patch?.vslPage?.videoUrl),
+      poster: S(patch?.vslPage?.poster),
+      ctaLabel: S(patch?.vslPage?.ctaLabel),
+      unmuteHint: S(patch?.vslPage?.unmuteHint),
+      revealAfterSeconds: Number(patch?.vslPage?.revealAfterSeconds) || 0,
     },
     highlights: {
       title: S(patch?.highlights?.title),

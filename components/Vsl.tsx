@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import type { SiteConfig } from "@/config/site";
 import Section from "./Section";
@@ -27,6 +27,33 @@ export default function Vsl({ site }: { site: SiteConfig }) {
   const { vsl } = site;
   const [playing, setPlaying] = useState(false);
   const media = resolveMedia(vsl.videoUrl);
+  const isFile = media?.type === "file";
+
+  // Arquivo .mp4: roda sozinho MUDO quando entra na tela; clique para ativar o som.
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [muted, setMuted] = useState(true);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || !isFile) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) v.play().catch(() => {});
+        else v.pause();
+      },
+      { threshold: 0.4 }
+    );
+    io.observe(v);
+    return () => io.disconnect();
+  }, [isFile]);
+
+  const toggleMute = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    setMuted(v.muted);
+    if (!v.muted && v.paused) v.play().catch(() => {});
+  };
 
   return (
     <Section id="video" className="bg-night">
@@ -47,25 +74,46 @@ export default function Vsl({ site }: { site: SiteConfig }) {
           />
 
           <div className="glass relative aspect-video overflow-hidden rounded-3xl border-red-700/30 shadow-red">
-            {playing && media ? (
-              media.type === "iframe" ? (
-                <iframe
-                  src={media.src}
-                  title={vsl.title}
-                  className="absolute inset-0 h-full w-full"
-                  allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-                  allowFullScreen
-                />
-              ) : (
+            {isFile && media ? (
+              // Arquivo .mp4: roda sozinho MUDO (ao entrar na tela). Clique = som.
+              <>
                 <video
+                  ref={videoRef}
                   src={media.src}
                   poster={vsl.poster || undefined}
-                  controls
-                  autoPlay
+                  muted
+                  loop
                   playsInline
-                  className="absolute inset-0 h-full w-full bg-black"
+                  preload="metadata"
+                  onClick={toggleMute}
+                  className="absolute inset-0 h-full w-full cursor-pointer bg-black object-cover"
                 />
-              )
+                {muted && (
+                  <button
+                    type="button"
+                    onClick={toggleMute}
+                    className="absolute inset-0 flex items-end justify-center pb-5"
+                    aria-label="Ativar som"
+                  >
+                    <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/55 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-bone/90 backdrop-blur">
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M11 5 6 9H2v6h4l5 4V5z" />
+                        <line x1="23" y1="9" x2="17" y2="15" />
+                        <line x1="17" y1="9" x2="23" y2="15" />
+                      </svg>
+                      Toque para ativar o som
+                    </span>
+                  </button>
+                )}
+              </>
+            ) : playing && media ? (
+              <iframe
+                src={media.src}
+                title={vsl.title}
+                className="absolute inset-0 h-full w-full"
+                allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+                allowFullScreen
+              />
             ) : (
               <button
                 type="button"
