@@ -33,12 +33,19 @@ export type CardData = {
 /** UTMs / parâmetros de campanha repassados pra atribuição (UTMify). */
 export type TrackingParams = Record<string, string>;
 
+/** Cookies do Meta Pixel (_fbp/_fbc) — usados no match do Purchase via CAPI. */
+export type PixelIds = {
+  fbp?: string;
+  fbc?: string;
+};
+
 export type CreateCheckoutRequest = {
   method: PaymentMethod;
   bump: boolean; // cliente marcou o order bump?
   customer: Customer;
   card?: CardData; // obrigatório quando method === "card"
   tracking?: TrackingParams; // UTMs capturados na landing
+  pixel?: PixelIds; // _fbp/_fbc do navegador (para o Purchase server-side)
 };
 
 export type PixData = {

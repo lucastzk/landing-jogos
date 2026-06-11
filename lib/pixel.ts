@@ -16,10 +16,15 @@ declare global {
 
 type PixelParams = Record<string, unknown>;
 
-/** Evento PADRÃO do Meta (PageView, InitiateCheckout, AddPaymentInfo, Purchase...). */
-export function fbTrack(event: string, params?: PixelParams): void {
+/**
+ * Evento PADRÃO do Meta (PageView, InitiateCheckout, AddPaymentInfo, Purchase...).
+ * `options.eventID` permite deduplicar com o evento server-side (CAPI): basta
+ * usar o mesmo id (ex.: o transactionId) nos dois lados.
+ */
+export function fbTrack(event: string, params?: PixelParams, options?: { eventID?: string }): void {
   if (typeof window !== "undefined" && typeof window.fbq === "function") {
-    window.fbq("track", event, params);
+    if (options?.eventID) window.fbq("track", event, params, options);
+    else window.fbq("track", event, params);
   }
 }
 

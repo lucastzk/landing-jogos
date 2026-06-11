@@ -9,6 +9,8 @@ import {
   onlyDigits,
 } from "@/lib/format";
 import { createTransaction, AmploPayError } from "@/lib/amplopay";
+import { saveTxRecord } from "@/lib/tx-store";
+import { firePurchaseOnce } from "@/lib/purchase";
 import { rateLimit, clientIpFromRequest } from "@/lib/rate-limit";
 import type { CreateCheckoutRequest, CreateCheckoutResponse, TrackingParams } from "@/lib/checkout-types";
 
@@ -121,6 +123,27 @@ export async function POST(req: Request): Promise<NextResponse<CreateCheckoutRes
       tracking,
       clientIp,
     });
+
+    // Persiste o necessário para o Purchase server-side (CAPI) no webhook/polling.
+    // O _fbc pode não existir como cookie; reconstruímos a partir do fbclid se preciso.
+    const fbc = body.pixel?.fbc || (tracking?.fbclid ? `fb.1.${Date.now()}.${tracking.fbclid}` : undefined);
+    await saveTxRecord({
+      id: tx.id,
+      amountInCents,
+      currency: "BRL",
+      contentName: checkout.product.name,
+      email: customer.email.trim(),
+      phone: onlyDigits(customer.phone),
+      fbp: body.pixel?.fbp,
+      fbc,
+      clientIp,
+      userAgent: req.headers.get("user-agent") || undefined,
+      eventSourceUrl: req.headers.get("referer") || undefined,
+      createdAtSec: Math.floor(Date.now() / 1000),
+    });
+
+    // Cartão aprovado na hora já dispara o Purchase server-side (PIX vem pelo webhook).
+    if (tx.status === "paid") await firePurchaseOnce(tx.id);
 
     return NextResponse.json<CreateCheckoutResponse>({
       ok: true,

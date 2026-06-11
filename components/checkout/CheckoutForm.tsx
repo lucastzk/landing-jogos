@@ -33,6 +33,14 @@ import PixPayment from "./PixPayment";
 
 type Step = "form" | "pix" | "success" | "failed" | "expired";
 
+/** Lê um cookie pelo nome (ex.: _fbp/_fbc do Meta Pixel). undefined se ausente. */
+function readCookie(name: string): string | undefined {
+  if (typeof document === "undefined") return undefined;
+  const escaped = name.replace(/([.$?*|{}()[\]\\/+^])/g, "\\$1");
+  const m = document.cookie.match(new RegExp("(?:^|; )" + escaped + "=([^;]*)"));
+  return m ? decodeURIComponent(m[1]) : undefined;
+}
+
 const EMPTY_CARD: CardData = {
   number: "",
   holderName: "",
@@ -62,17 +70,19 @@ export default function CheckoutForm({ checkout }: { checkout: CheckoutConfig })
   );
 
   // Meta Pixel: dispara Purchase UMA vez quando o pagamento é confirmado.
+  // O eventID (= transactionId) deduplica com o Purchase server-side (CAPI),
+  // então a venda nunca conta em dobro mesmo com os dois disparando.
   const purchaseTracked = useRef(false);
   useEffect(() => {
     if (step === "success" && !purchaseTracked.current) {
       purchaseTracked.current = true;
-      fbTrack("Purchase", {
-        value: amountInCents / 100,
-        currency: "BRL",
-        content_name: checkout.product.name,
-      });
+      fbTrack(
+        "Purchase",
+        { value: amountInCents / 100, currency: "BRL", content_name: checkout.product.name },
+        transactionId ? { eventID: transactionId } : undefined
+      );
     }
-  }, [step, amountInCents, checkout.product.name]);
+  }, [step, amountInCents, checkout.product.name, transactionId]);
 
   const setCustomerField = (patch: Partial<Customer>) => setCustomer((c) => ({ ...c, ...patch }));
   const setCardField = (patch: Partial<CardData>) => setCard((c) => ({ ...c, ...patch }));
@@ -116,6 +126,7 @@ export default function CheckoutForm({ checkout }: { checkout: CheckoutConfig })
         },
         card: method === "card" ? { ...card, number: onlyDigits(card.number) } : undefined,
         tracking: getTracking(), // UTMs da campanha (Facebook Ads etc.)
+        pixel: { fbp: readCookie("_fbp"), fbc: readCookie("_fbc") }, // p/ Purchase via CAPI
       };
 
       const res = await fetch("/api/checkout", {

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getTransactionStatus, AmploPayError } from "@/lib/amplopay";
+import { firePurchaseOnce } from "@/lib/purchase";
 import type { StatusResponse } from "@/lib/checkout-types";
 
 export const runtime = "nodejs";
@@ -14,6 +15,9 @@ export async function GET(req: Request): Promise<NextResponse<StatusResponse>> {
 
   try {
     const status = await getTransactionStatus(id);
+    // Pago detectado pelo polling (aba aberta): dispara o Purchase server-side.
+    // Idempotente com o webhook — só um dos caminhos envia de fato.
+    if (status === "paid") await firePurchaseOnce(id);
     return NextResponse.json<StatusResponse>({ ok: true, status });
   } catch (err) {
     if (err instanceof AmploPayError) {
