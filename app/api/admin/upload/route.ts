@@ -8,7 +8,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
-const MAX_BYTES = 64 * 1024 * 1024; // 64 MB
+const MAX_BYTES = 300 * 1024 * 1024; // 300 MB (vídeos de VSL costumam ser pesados)
 
 // Tipo MIME → extensão. Vídeos grandes: prefira uma URL (YouTube/Vimeo).
 const ALLOWED: Record<string, string> = {
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   }
   if (file.size > MAX_BYTES) {
     return NextResponse.json(
-      { ok: false, error: "Arquivo muito grande (máx. 64 MB). Para vídeos longos, use uma URL do YouTube/Vimeo." },
+      { ok: false, error: "Arquivo muito grande (máx. 300 MB). Para vídeos longos, use uma URL do YouTube/Vimeo." },
       { status: 413 }
     );
   }
