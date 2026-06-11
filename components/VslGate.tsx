@@ -81,18 +81,20 @@ export default function VslGate({
         aria-hidden="true"
       />
 
-      <div className="relative z-10 flex w-full max-w-md flex-col items-center">
+      <div className="relative z-10 mx-auto w-full max-w-sm">
         {/* Selo */}
         {badge && (
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-700/40 bg-red-600/10 px-3.5 py-1.5">
-            <span className="h-1.5 w-1.5 animate-blink rounded-full bg-red-500 shadow-[0_0_8px_2px_rgba(240,16,16,0.7)]" />
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-red-300/90">{badge}</span>
+          <div className="mb-4 flex justify-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-red-700/40 bg-red-600/10 px-3.5 py-1.5">
+              <span className="h-1.5 w-1.5 animate-blink rounded-full bg-red-500 shadow-[0_0_8px_2px_rgba(240,16,16,0.7)]" />
+              <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-red-300/90">{badge}</span>
+            </div>
           </div>
         )}
 
         {/* Gancho */}
         {headline && (
-          <h1 className="mx-auto w-full max-w-[19rem] break-words text-center font-display text-[1.4rem] font-extrabold leading-[1.12] tracking-tight text-bone sm:max-w-md sm:text-[2rem]">
+          <h1 className="text-balance break-words text-center font-display text-[1.5rem] font-extrabold leading-[1.12] tracking-tight text-bone sm:text-[1.9rem]">
             {headline}
           </h1>
         )}
