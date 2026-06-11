@@ -13,8 +13,8 @@ npm ci
 echo "==> Gerando build de produção"
 npm run build
 
-echo "==> Reiniciando o app (PM2)"
-pm2 restart landing-jogos || pm2 start ecosystem.config.cjs
+echo "==> Reiniciando o app (PM2, relendo o ecosystem)"
+pm2 startOrReload ecosystem.config.cjs --update-env
 pm2 save
 
 echo "==> Deploy concluído ✅"

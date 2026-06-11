@@ -12,7 +12,7 @@
  * ============================================================================
  */
 
-import { randomUUID } from "crypto";
+import { randomUUID, createHash, timingSafeEqual } from "crypto";
 import type { PaymentStatus } from "./checkout-types";
 
 // ---------------------------------------------------------------------------
@@ -263,13 +263,20 @@ export async function getTransactionStatus(id: string): Promise<PaymentStatus> {
 // validamos um token opcional.
 export function isWebhookSignatureValid(headers: Headers, _rawBody: string): boolean {
   const secret = process.env.AMPLOPAY_WEBHOOK_SECRET;
-  if (!secret) return true; // sem segredo configurado: não valida (esboço)
+  // Sem segredo configurado: não dá pra verificar assinatura. O handler NÃO
+  // confia no corpo — ele RECONSULTA o status autoritativo por id na AmploPay
+  // (essa é a proteção real contra forja). Por isso seguimos só pra reconsultar.
+  if (!secret) return true;
   const provided =
     headers.get("x-webhook-signature") ??
     headers.get("x-signature") ??
     headers.get("authorization") ??
     "";
-  return provided.includes(secret);
+  if (!provided) return false;
+  // Comparação EXATA em tempo constante (não substring, sem timing oracle).
+  const a = createHash("sha256").update(provided).digest();
+  const b = createHash("sha256").update(secret).digest();
+  return timingSafeEqual(a, b);
 }
 
 export function parseWebhook(body: any): { id: string; status: PaymentStatus } {

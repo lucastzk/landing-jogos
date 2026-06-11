@@ -9,6 +9,7 @@ import {
   onlyDigits,
 } from "@/lib/format";
 import { createTransaction, AmploPayError } from "@/lib/amplopay";
+import { rateLimit, clientIpFromRequest } from "@/lib/rate-limit";
 import type { CreateCheckoutRequest, CreateCheckoutResponse, TrackingParams } from "@/lib/checkout-types";
 
 // Garante execução no runtime Node (precisamos da secret key no servidor).
@@ -37,6 +38,15 @@ function bad(error: string, fieldErrors?: Record<string, string>) {
 }
 
 export async function POST(req: Request): Promise<NextResponse<CreateCheckoutResponse>> {
+  // Anti-abuso: limita criação de transações por IP.
+  const rl = rateLimit(`checkout:${clientIpFromRequest(req)}`, 12, 10 * 60 * 1000);
+  if (!rl.ok) {
+    return NextResponse.json<CreateCheckoutResponse>(
+      { ok: false, error: "Muitas tentativas. Aguarde alguns minutos e tente de novo." },
+      { status: 429 }
+    );
+  }
+
   let body: CreateCheckoutRequest;
   try {
     body = (await req.json()) as CreateCheckoutRequest;

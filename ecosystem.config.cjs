@@ -7,7 +7,9 @@ module.exports = {
     {
       name: "landing-jogos",
       script: "node_modules/next/dist/bin/next",
-      args: "start -p 3000",
+      // -H 127.0.0.1: escuta só no localhost; o público chega pelo Nginx (porta
+      // 80/443). Impede acessar a porta 3000 direto e forjar X-Real-IP/XFF.
+      args: "start -p 3000 -H 127.0.0.1",
       instances: 1,
       autorestart: true,
       max_memory_restart: "512M",

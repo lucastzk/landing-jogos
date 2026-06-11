@@ -7,18 +7,42 @@ import { cookies } from "next/headers";
 
 export const SESSION_COOKIE = "admin_session";
 
-/** Senha do painel. Defina ADMIN_PASSWORD no .env (padrão "admin" em dev). */
+/**
+ * Senha do painel (ADMIN_PASSWORD no .env). Em PRODUÇÃO, se não estiver
+ * definida, FALHA (não cai numa senha padrão insegura). Só em dev usa "admin".
+ */
 export function adminPassword(): string {
-  return process.env.ADMIN_PASSWORD || "admin";
+  const p = process.env.ADMIN_PASSWORD;
+  if (p && p.length > 0) return p;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("ADMIN_PASSWORD não definido — recusando autenticação com senha padrão.");
+  }
+  return "admin"; // somente em desenvolvimento
 }
 
-/** Token determinístico derivado da senha — guardado no cookie httpOnly. */
+/**
+ * Token de sessão guardado no cookie httpOnly. Com ADMIN_SESSION_SECRET (segredo
+ * de servidor), usa HMAC — assim o cookie NÃO é derivável só da senha. Sem o
+ * segredo, mantém o derivado antigo (compatibilidade). Defina o segredo!
+ */
 export function sessionToken(): string {
-  return crypto.createHash("sha256").update(`landing-jogos::${adminPassword()}`).digest("hex");
+  const secret = process.env.ADMIN_SESSION_SECRET;
+  const material = `landing-jogos::${adminPassword()}`;
+  if (secret) {
+    return crypto.createHmac("sha256", secret).update(material).digest("hex");
+  }
+  return crypto.createHash("sha256").update(material).digest("hex");
+}
+
+/** Comparação em tempo constante (evita timing attack). */
+export function safeEqual(a: string, b: string): boolean {
+  const ha = crypto.createHash("sha256").update(a).digest();
+  const hb = crypto.createHash("sha256").update(b).digest();
+  return crypto.timingSafeEqual(ha, hb);
 }
 
 /** Confere se a requisição tem um cookie de sessão válido. */
 export function isAuthed(): boolean {
   const value = cookies().get(SESSION_COOKIE)?.value;
-  return !!value && value === sessionToken();
+  return !!value && safeEqual(value, sessionToken());
 }
