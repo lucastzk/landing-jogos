@@ -92,12 +92,14 @@ export default function VslGate({
 
         {/* Gancho */}
         {headline && (
-          <h1 className="text-center font-display text-2xl font-extrabold leading-[1.05] tracking-tight text-bone sm:text-[2rem]">
+          <h1 className="w-full text-balance text-center font-display text-[1.7rem] font-extrabold leading-[1.05] tracking-tight text-bone sm:text-[2rem]">
             {headline}
           </h1>
         )}
         {subheadline && (
-          <p className="mx-auto mt-2.5 max-w-sm text-center text-sm leading-relaxed text-bone/55">{subheadline}</p>
+          <p className="mx-auto mt-2.5 w-full max-w-sm text-balance text-center text-sm leading-relaxed text-bone/55">
+            {subheadline}
+          </p>
         )}
 
         {/* Player vertical 9:16 com moldura iluminada */}
@@ -172,7 +174,7 @@ export default function VslGate({
                 </svg>
               </a>
               {trustBadges.length > 0 && (
-                <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[0.72rem] font-medium text-bone/45">
+                <div className="mt-4 flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[0.72rem] font-medium text-bone/45">
                   {trustBadges.map((b) => (
                     <span key={b} className="inline-flex items-center gap-1.5">
                       <svg className="h-3.5 w-3.5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
