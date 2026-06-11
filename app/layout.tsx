@@ -43,7 +43,6 @@ export const metadata: Metadata = {
     images: [site.meta.ogImage],
   },
   robots: { index: true, follow: true },
-  other: { "x-auto-deploy": "ok-1" },
 };
 
 export const viewport: Viewport = {
