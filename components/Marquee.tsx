@@ -1,7 +1,7 @@
-import { site } from "@/config/site";
+import type { SiteConfig } from "@/config/site";
 
 /** Faixa de texto rolando — movida via JS, reage à velocidade do scroll. */
-export default function Marquee() {
+export default function Marquee({ site }: { site: SiteConfig }) {
   const words = site.marqueeWords;
   const group = (
     <div className="flex flex-shrink-0 items-center">

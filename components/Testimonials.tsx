@@ -1,8 +1,8 @@
-import { site } from "@/config/site";
+import type { SiteConfig } from "@/config/site";
 import Section from "./Section";
 import { TestimonialsColumn } from "@/components/ui/testimonials-columns-1";
 
-export default function Testimonials() {
+export default function Testimonials({ site }: { site: SiteConfig }) {
   const { testimonials } = site;
   const items = testimonials.items;
   const all = items.slice();

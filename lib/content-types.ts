@@ -1,13 +1,64 @@
 /**
  * Modelo EDITÁVEL pelo painel admin. Mantido separado do store (que importa
  * `fs`) para poder ser usado também no client (apenas como tipo).
+ *
+ * EditableContent espelha os campos de texto/mídia da landing (config/site.ts).
+ * EditableCheckout espelha os campos do checkout (config/checkout.ts).
  */
+
 export type EditableContent = {
-  hero: { mockupImage: string };
-  vsl: { videoUrl: string; poster: string };
+  meta: { siteName: string; title: string; description: string };
+  brand: { name: string };
+  cta: { label: string; subtext: string };
+  marqueeWords: string[];
+  hero: {
+    kicker: string;
+    headlineLines: string[];
+    subheadline: string;
+    mockupImage: string;
+    trustBadges: string[];
+  };
+  vsl: {
+    kicker: string;
+    title: string;
+    subtitle: string;
+    videoUrl: string;
+    poster: string;
+    bullets: string[];
+  };
   highlights: {
+    title: string;
+    subtitle: string;
     games: { name: string; genre: string; description: string; image: string }[];
   };
+  whatYouGet: {
+    title: string;
+    items: { icon: string; title: string; text: string }[];
+  };
+  benefits: {
+    title: string;
+    items: { emoji: string; title: string; text: string }[];
+  };
+  testimonials: {
+    title: string;
+    subtitle: string;
+    items: { name: string; stars: number; text: string }[];
+  };
+  offer: {
+    title: string;
+    subtitle: string;
+    ribbon: string;
+    fullPrice: string;
+    currentPrice: string;
+    priceCaption: string;
+    includes: string[];
+    scarcityText: string;
+    securityText: string;
+  };
+  guarantee: { title: string; text: string; days: number; points: string[] };
+  faq: { title: string; items: { q: string; a: string }[] };
+  finalCta: { title: string; text: string };
+  footer: { brand: string; description: string; disclaimer: string };
 };
 
 /** Campos do CHECKOUT editáveis pelo painel. Preços em CENTAVOS. */

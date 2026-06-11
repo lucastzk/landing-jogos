@@ -1,7 +1,7 @@
-import { site } from "@/config/site";
+import type { SiteConfig } from "@/config/site";
 
 /** Header fixo em vidro — marca à esquerda, CTA magnético à direita. */
-export default function Header() {
+export default function Header({ site }: { site: SiteConfig }) {
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6">
       <div className="glass mx-auto flex max-w-6xl items-center justify-between rounded-full px-5 py-3 shadow-soft sm:px-6">

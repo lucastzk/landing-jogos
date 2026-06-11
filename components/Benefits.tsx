@@ -1,9 +1,9 @@
-import { site } from "@/config/site";
+import type { SiteConfig } from "@/config/site";
 import Section from "./Section";
 import SectionTitle from "./SectionTitle";
 import CtaButton from "./CtaButton";
 
-export default function Benefits() {
+export default function Benefits({ site }: { site: SiteConfig }) {
   const { benefits } = site;
 
   return (
@@ -28,7 +28,7 @@ export default function Benefits() {
       </div>
 
       <div className="mt-12 flex justify-center">
-        <CtaButton withSubtext />
+        <CtaButton site={site} withSubtext />
       </div>
     </Section>
   );

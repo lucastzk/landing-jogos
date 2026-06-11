@@ -1,7 +1,7 @@
-import { site } from "@/config/site";
+import type { SiteConfig } from "@/config/site";
 import CtaButton from "./CtaButton";
 
-export default function FinalCta() {
+export default function FinalCta({ site }: { site: SiteConfig }) {
   const { finalCta, offer } = site;
 
   return (
@@ -40,7 +40,7 @@ export default function FinalCta() {
         </p>
 
         <div data-reveal data-delay="3" className="mt-10 flex justify-center">
-          <CtaButton size="lg" withSubtext />
+          <CtaButton site={site} size="lg" withSubtext />
         </div>
       </div>
     </section>

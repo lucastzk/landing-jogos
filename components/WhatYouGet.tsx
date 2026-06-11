@@ -1,16 +1,16 @@
-import { site } from "@/config/site";
+import type { SiteConfig } from "@/config/site";
 import Section from "./Section";
 import SectionTitle from "./SectionTitle";
 import RadialGlow from "@/components/ui/radial-glow";
 import Icon from "./Icon";
 
-export default function WhatYouGet() {
+export default function WhatYouGet({ site }: { site: SiteConfig }) {
   const { whatYouGet } = site;
 
   return (
     <Section id="o-que-recebe" className="relative isolate overflow-hidden bg-night">
       <RadialGlow position="50% 0%" size="620px" />
-      <SectionTitle index="03" kicker="O PACOTE" title={whatYouGet.title} />
+      <SectionTitle index="03" kicker="INCLUSO" title={whatYouGet.title} />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {whatYouGet.items.map((item, i) => (

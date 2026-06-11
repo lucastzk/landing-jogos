@@ -1,4 +1,4 @@
-import { site } from "@/config/site";
+import type { SiteConfig } from "@/config/site";
 import Section from "./Section";
 import SectionTitle from "./SectionTitle";
 import CtaButton from "./CtaButton";
@@ -19,7 +19,7 @@ function brl(n: number): string {
   );
 }
 
-export default function Offer() {
+export default function Offer({ site }: { site: SiteConfig }) {
   const { offer } = site;
 
   const full = toNumber(offer.fullPrice);
@@ -130,7 +130,7 @@ export default function Offer() {
           </ul>
 
           <div className="relative mt-9">
-            <CtaButton size="lg" withSubtext />
+            <CtaButton site={site} size="lg" withSubtext />
           </div>
 
           {/* confiança / formas de pagamento */}

@@ -1,7 +1,7 @@
-import { site } from "@/config/site";
+import type { SiteConfig } from "@/config/site";
 import Section from "./Section";
 
-export default function Guarantee() {
+export default function Guarantee({ site }: { site: SiteConfig }) {
   const { guarantee } = site;
 
   return (

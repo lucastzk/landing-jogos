@@ -22,20 +22,12 @@ function isPlainObject(v: Json): v is Record<string, Json> {
   return v !== null && typeof v === "object" && !Array.isArray(v);
 }
 
-/** Mescla profunda: objetos por chave, arrays por índice. `override` vence. */
+/**
+ * Mescla profunda: objetos por chave; arrays e primitivos o `override`
+ * SUBSTITUI (assim o painel pode adicionar/remover itens de listas).
+ */
 function deepMerge(base: Json, override: Json): Json {
   if (override === undefined) return base;
-  if (Array.isArray(base) && Array.isArray(override)) {
-    const out = base.map((item, i) =>
-      i < override.length
-        ? isPlainObject(item) && isPlainObject(override[i])
-          ? deepMerge(item, override[i])
-          : override[i] ?? item
-        : item
-    );
-    for (let i = base.length; i < override.length; i++) out.push(override[i]);
-    return out;
-  }
   if (isPlainObject(base) && isPlainObject(override)) {
     const out: Record<string, Json> = { ...base };
     for (const key of Object.keys(override)) {
@@ -66,15 +58,71 @@ export async function getSite(): Promise<SiteConfig> {
 export async function getEditableContent(): Promise<EditableContent> {
   const s = await getSite();
   return {
-    hero: { mockupImage: s.hero.mockupImage ?? "" },
-    vsl: { videoUrl: s.vsl.videoUrl ?? "", poster: s.vsl.poster ?? "" },
+    meta: { siteName: s.meta.siteName, title: s.meta.title, description: s.meta.description },
+    brand: { name: s.brand.name },
+    cta: { label: s.cta.label, subtext: s.cta.subtext },
+    marqueeWords: [...s.marqueeWords],
+    hero: {
+      kicker: s.hero.kicker,
+      headlineLines: [...s.hero.headlineLines],
+      subheadline: s.hero.subheadline,
+      mockupImage: s.hero.mockupImage ?? "",
+      trustBadges: [...s.hero.trustBadges],
+    },
+    vsl: {
+      kicker: s.vsl.kicker,
+      title: s.vsl.title,
+      subtitle: s.vsl.subtitle,
+      videoUrl: s.vsl.videoUrl ?? "",
+      poster: s.vsl.poster ?? "",
+      bullets: [...s.vsl.bullets],
+    },
     highlights: {
+      title: s.highlights.title,
+      subtitle: s.highlights.subtitle,
       games: s.highlights.games.map((g) => ({
         name: g.name,
         genre: g.genre,
         description: g.description,
         image: g.image ?? "",
       })),
+    },
+    whatYouGet: {
+      title: s.whatYouGet.title,
+      items: s.whatYouGet.items.map((i) => ({ icon: i.icon, title: i.title, text: i.text })),
+    },
+    benefits: {
+      title: s.benefits.title,
+      items: s.benefits.items.map((i) => ({ emoji: i.emoji, title: i.title, text: i.text })),
+    },
+    testimonials: {
+      title: s.testimonials.title,
+      subtitle: s.testimonials.subtitle,
+      items: s.testimonials.items.map((t) => ({ name: t.name, stars: t.stars, text: t.text })),
+    },
+    offer: {
+      title: s.offer.title,
+      subtitle: s.offer.subtitle,
+      ribbon: s.offer.ribbon,
+      fullPrice: s.offer.fullPrice,
+      currentPrice: s.offer.currentPrice,
+      priceCaption: s.offer.priceCaption,
+      includes: [...s.offer.includes],
+      scarcityText: s.offer.scarcityText,
+      securityText: s.offer.securityText,
+    },
+    guarantee: {
+      title: s.guarantee.title,
+      text: s.guarantee.text,
+      days: s.guarantee.days,
+      points: [...s.guarantee.points],
+    },
+    faq: { title: s.faq.title, items: s.faq.items.map((f) => ({ q: f.q, a: f.a })) },
+    finalCta: { title: s.finalCta.title, text: s.finalCta.text },
+    footer: {
+      brand: s.footer.brand,
+      description: s.footer.description,
+      disclaimer: s.footer.disclaimer,
     },
   };
 }
@@ -157,23 +205,103 @@ export async function saveEditableCheckout(patch: EditableCheckout): Promise<voi
   await fs.writeFile(CHECKOUT_FILE, JSON.stringify(overrides, null, 2), "utf8");
 }
 
-/** Grava as sobrescritas a partir do que o painel enviou (só campos de mídia). */
+/** Grava as sobrescritas (todos os textos/mídia da landing) vindas do painel. */
 export async function saveEditableContent(patch: EditableContent): Promise<void> {
+  const S = (v: unknown) => String(v ?? "");
+  const SA = (a: unknown) => (Array.isArray(a) ? a.map(S) : []);
+  const num = (v: unknown, def: number) => {
+    const n = Math.round(Number(v));
+    return Number.isFinite(n) ? n : def;
+  };
+
   const overrides = {
-    hero: { mockupImage: String(patch?.hero?.mockupImage ?? "") },
+    meta: {
+      siteName: S(patch?.meta?.siteName),
+      title: S(patch?.meta?.title),
+      description: S(patch?.meta?.description),
+    },
+    brand: { name: S(patch?.brand?.name) },
+    cta: { label: S(patch?.cta?.label), subtext: S(patch?.cta?.subtext) },
+    marqueeWords: SA(patch?.marqueeWords),
+    hero: {
+      kicker: S(patch?.hero?.kicker),
+      headlineLines: SA(patch?.hero?.headlineLines),
+      subheadline: S(patch?.hero?.subheadline),
+      mockupImage: S(patch?.hero?.mockupImage),
+      trustBadges: SA(patch?.hero?.trustBadges),
+    },
     vsl: {
-      videoUrl: String(patch?.vsl?.videoUrl ?? ""),
-      poster: String(patch?.vsl?.poster ?? ""),
+      kicker: S(patch?.vsl?.kicker),
+      title: S(patch?.vsl?.title),
+      subtitle: S(patch?.vsl?.subtitle),
+      videoUrl: S(patch?.vsl?.videoUrl),
+      poster: S(patch?.vsl?.poster),
+      bullets: SA(patch?.vsl?.bullets),
     },
     highlights: {
+      title: S(patch?.highlights?.title),
+      subtitle: S(patch?.highlights?.subtitle),
       games: (patch?.highlights?.games ?? []).map((g) => ({
-        name: String(g?.name ?? ""),
-        genre: String(g?.genre ?? ""),
-        description: String(g?.description ?? ""),
-        image: String(g?.image ?? ""),
+        name: S(g?.name),
+        genre: S(g?.genre),
+        description: S(g?.description),
+        image: S(g?.image),
       })),
     },
+    whatYouGet: {
+      title: S(patch?.whatYouGet?.title),
+      items: (patch?.whatYouGet?.items ?? []).map((i) => ({
+        icon: S(i?.icon),
+        title: S(i?.title),
+        text: S(i?.text),
+      })),
+    },
+    benefits: {
+      title: S(patch?.benefits?.title),
+      items: (patch?.benefits?.items ?? []).map((i) => ({
+        emoji: S(i?.emoji),
+        title: S(i?.title),
+        text: S(i?.text),
+      })),
+    },
+    testimonials: {
+      title: S(patch?.testimonials?.title),
+      subtitle: S(patch?.testimonials?.subtitle),
+      items: (patch?.testimonials?.items ?? []).map((t) => ({
+        name: S(t?.name),
+        stars: Math.max(1, Math.min(5, num(t?.stars, 5))),
+        text: S(t?.text),
+      })),
+    },
+    offer: {
+      title: S(patch?.offer?.title),
+      subtitle: S(patch?.offer?.subtitle),
+      ribbon: S(patch?.offer?.ribbon),
+      fullPrice: S(patch?.offer?.fullPrice),
+      currentPrice: S(patch?.offer?.currentPrice),
+      priceCaption: S(patch?.offer?.priceCaption),
+      includes: SA(patch?.offer?.includes),
+      scarcityText: S(patch?.offer?.scarcityText),
+      securityText: S(patch?.offer?.securityText),
+    },
+    guarantee: {
+      title: S(patch?.guarantee?.title),
+      text: S(patch?.guarantee?.text),
+      days: Math.max(0, num(patch?.guarantee?.days, 7)),
+      points: SA(patch?.guarantee?.points),
+    },
+    faq: {
+      title: S(patch?.faq?.title),
+      items: (patch?.faq?.items ?? []).map((f) => ({ q: S(f?.q), a: S(f?.a) })),
+    },
+    finalCta: { title: S(patch?.finalCta?.title), text: S(patch?.finalCta?.text) },
+    footer: {
+      brand: S(patch?.footer?.brand),
+      description: S(patch?.footer?.description),
+      disclaimer: S(patch?.footer?.disclaimer),
+    },
   };
+
   await fs.mkdir(DATA_DIR, { recursive: true });
   await fs.writeFile(CONTENT_FILE, JSON.stringify(overrides, null, 2), "utf8");
 }

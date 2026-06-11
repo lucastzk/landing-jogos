@@ -4,7 +4,8 @@ import Section from "./Section";
 import SectionTitle from "./SectionTitle";
 import CtaButton from "./CtaButton";
 
-export default function Highlights({ highlights }: { highlights: SiteConfig["highlights"] }) {
+export default function Highlights({ site }: { site: SiteConfig }) {
+  const { highlights } = site;
   return (
     <Section id="destaques" className="bg-black">
       <SectionTitle
@@ -55,7 +56,7 @@ export default function Highlights({ highlights }: { highlights: SiteConfig["hig
       </div>
 
       <div className="mt-12 flex justify-center">
-        <CtaButton withSubtext />
+        <CtaButton site={site} withSubtext />
       </div>
     </Section>
   );

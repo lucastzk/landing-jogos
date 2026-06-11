@@ -1,7 +1,7 @@
-import { site } from "@/config/site";
+import type { SiteConfig } from "@/config/site";
 
 /** Barra de compra fixa no rodapé — só no MOBILE. Mantém a ação sempre à mão. */
-export default function StickyMobileCta() {
+export default function StickyMobileCta({ site }: { site: SiteConfig }) {
   const isExternal = /^https?:\/\//.test(site.cta.checkoutUrl);
   const externalProps = isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {};
 

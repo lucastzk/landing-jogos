@@ -1,6 +1,7 @@
-import { site } from "@/config/site";
+import type { SiteConfig } from "@/config/site";
 
 type Props = {
+  site: SiteConfig;
   size?: "md" | "lg";
   withSubtext?: boolean;
   className?: string;
@@ -10,7 +11,7 @@ type Props = {
  * Botão de COMPRA — única ação da página.
  * Sempre o mesmo texto, gradiente vermelho, brilho suave, magnético no desktop.
  */
-export default function CtaButton({ size = "lg", withSubtext = false, className = "" }: Props) {
+export default function CtaButton({ site, size = "lg", withSubtext = false, className = "" }: Props) {
   const sizes = {
     md: "px-7 py-3.5 text-sm",
     lg: "px-9 py-[1.15rem] text-base",

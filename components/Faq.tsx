@@ -1,8 +1,8 @@
-import { site } from "@/config/site";
+import type { SiteConfig } from "@/config/site";
 import Section from "./Section";
 import SectionTitle from "./SectionTitle";
 
-export default function Faq() {
+export default function Faq({ site }: { site: SiteConfig }) {
   const { faq } = site;
 
   return (

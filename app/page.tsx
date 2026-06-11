@@ -21,33 +21,33 @@ export default async function Home() {
   const site = await getSite();
   return (
     <main className="pb-20 lg:pb-0">
-      <Header />
+      <Header site={site} />
       {/* 1. HERO */}
-      <Hero hero={site.hero} />
-      <Marquee />
+      <Hero site={site} />
+      <Marquee site={site} />
       {/* 2. VÍDEO (VSL) */}
-      <Vsl vsl={site.vsl} />
+      <Vsl site={site} />
       {/* 3. DESTAQUES */}
-      <Highlights highlights={site.highlights} />
+      <Highlights site={site} />
       {/* 4. O QUE VOCÊ RECEBE */}
-      <WhatYouGet />
+      <WhatYouGet site={site} />
       {/* 5. BENEFÍCIOS */}
-      <Benefits />
+      <Benefits site={site} />
       {/* 6. PROVA SOCIAL */}
-      <Testimonials />
+      <Testimonials site={site} />
       {/* 7. OFERTA E PREÇO */}
-      <Offer />
+      <Offer site={site} />
       {/* 8. GARANTIA */}
-      <Guarantee />
+      <Guarantee site={site} />
       {/* 9. FAQ */}
-      <Faq />
-      <Marquee />
+      <Faq site={site} />
+      <Marquee site={site} />
       {/* 10. CTA FINAL */}
-      <FinalCta />
+      <FinalCta site={site} />
       {/* 11. RODAPÉ */}
-      <Footer />
+      <Footer site={site} />
 
-      <StickyMobileCta />
+      <StickyMobileCta site={site} />
     </main>
   );
 }

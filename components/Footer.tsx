@@ -1,6 +1,6 @@
-import { site } from "@/config/site";
+import type { SiteConfig } from "@/config/site";
 
-export default function Footer() {
+export default function Footer({ site }: { site: SiteConfig }) {
   const { footer, brand } = site;
   const year = 2025; // ano fixo p/ build estável; atualize quando desejar
 

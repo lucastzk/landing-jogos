@@ -2,7 +2,8 @@ import Image from "next/image";
 import type { SiteConfig } from "@/config/site";
 import CtaButton from "./CtaButton";
 
-export default function Hero({ hero }: { hero: SiteConfig["hero"] }) {
+export default function Hero({ site }: { site: SiteConfig }) {
+  const { hero } = site;
   return (
     <header id="topo" className="relative overflow-hidden">
       {/* Aurora / mesh suave de fundo */}
@@ -49,7 +50,7 @@ export default function Hero({ hero }: { hero: SiteConfig["hero"] }) {
           </p>
 
           <div data-reveal data-delay="3" className="mt-9 flex justify-start">
-            <CtaButton size="lg" withSubtext />
+            <CtaButton site={site} size="lg" withSubtext />
           </div>
 
           <ul

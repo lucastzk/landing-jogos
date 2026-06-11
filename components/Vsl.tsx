@@ -23,7 +23,8 @@ function resolveMedia(url: string): { type: "iframe" | "file"; src: string } | n
   return { type: "iframe", src: url };
 }
 
-export default function Vsl({ vsl }: { vsl: SiteConfig["vsl"] }) {
+export default function Vsl({ site }: { site: SiteConfig }) {
+  const { vsl } = site;
   const [playing, setPlaying] = useState(false);
   const media = resolveMedia(vsl.videoUrl);
 
