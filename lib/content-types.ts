@@ -27,11 +27,14 @@ export type EditableContent = {
     bullets: string[];
   };
   vslPage: {
+    badge: string;
     headline: string;
+    subheadline: string;
     videoUrl: string;
     poster: string;
     ctaLabel: string;
     unmuteHint: string;
+    trustBadges: string[];
     revealAfterSeconds: number;
   };
   highlights: {

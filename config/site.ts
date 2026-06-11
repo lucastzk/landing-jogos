@@ -97,12 +97,16 @@ export const site = {
   //  preferência: autoplay mudo, clique para desmutar e libera o botão no fim).
   // ----------------------------------------------------------------------
   vslPage: {
-    headline: "", // título opcional acima do vídeo (vazio = nada)
+    badge: "ATENÇÃO", // selo pequeno acima do título (vazio = nada)
+    headline: "Assista este vídeo até o final", // hook que prende a atenção
+    subheadline: "Em poucos minutos você vai entender por que isso é pra você.",
     // 👉 Vídeo VERTICAL. Aceita .mp4 (recomendado) ou YouTube/Vimeo.
     videoUrl: "",
     poster: "", // capa opcional
     ctaLabel: "QUERO APROVEITAR A OFERTA", // botão que aparece no fim
     unmuteHint: "Toque na tela para ativar o som",
+    // Selos de confiança abaixo do botão.
+    trustBadges: ["Garantia de 7 dias", "Pagamento seguro", "Acesso imediato"],
     // Só para YouTube/Vimeo (não dá para detectar o fim): libera o botão após X
     // segundos — coloque a duração do vídeo. Com .mp4, deixe 0 (usa o fim real).
     revealAfterSeconds: 0,

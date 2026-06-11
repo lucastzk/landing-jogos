@@ -68,7 +68,9 @@ export default function LandingEditor({ value, onChange }: Props) {
           Use o link <b>/vsl</b> no anúncio. O vídeo vertical roda sozinho (mudo, clique para
           ativar o som) e o botão que leva à landing só aparece <b>quando o vídeo termina</b>.
         </p>
-        <Txt label="Título acima do vídeo (opcional)" value={value.vslPage.headline} onChange={(v) => sec("vslPage", { headline: v })} />
+        <Txt label="Selo pequeno (ex.: ATENÇÃO)" value={value.vslPage.badge} onChange={(v) => sec("vslPage", { badge: v })} />
+        <Txt label="Título / gancho (acima do vídeo)" value={value.vslPage.headline} onChange={(v) => sec("vslPage", { headline: v })} />
+        <Area label="Subtítulo" value={value.vslPage.subheadline} onChange={(v) => sec("vslPage", { subheadline: v })} rows={2} />
         <MediaField
           label="Vídeo vertical (URL do YouTube/Vimeo ou arquivo .mp4)"
           value={value.vslPage.videoUrl}
@@ -80,6 +82,7 @@ export default function LandingEditor({ value, onChange }: Props) {
         <MediaField label="Capa do vídeo (poster, opcional)" value={value.vslPage.poster} onChange={(url) => sec("vslPage", { poster: url })} />
         <Txt label="Texto do botão (aparece no fim)" value={value.vslPage.ctaLabel} onChange={(v) => sec("vslPage", { ctaLabel: v })} />
         <Txt label="Dica de desmutar" value={value.vslPage.unmuteHint} onChange={(v) => sec("vslPage", { unmuteHint: v })} />
+        <StrList label="Selos de confiança (abaixo do botão)" values={value.vslPage.trustBadges} onChange={(v) => sec("vslPage", { trustBadges: v })} />
         <Txt
           label="Liberar botão após X segundos (só YouTube/Vimeo; com .mp4 deixe 0)"
           value={String(value.vslPage.revealAfterSeconds)}
