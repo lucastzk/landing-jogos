@@ -9,7 +9,7 @@ import { formatBRL } from "@/lib/format";
  * interação do bump fica no componente OrderBump, acima do botão de pagar.
  */
 export default function OrderSummary({ bumpSelected }: { bumpSelected: boolean }) {
-  const { product, orderBump } = useCheckoutConfig();
+  const { product, orderBump, guaranteeDays } = useCheckoutConfig();
   const bumpOn = bumpSelected && orderBump.enabled;
   const total = product.priceInCents + (bumpOn ? orderBump.priceInCents : 0);
 
@@ -60,6 +60,29 @@ export default function OrderSummary({ bumpSelected }: { bumpSelected: boolean }
         <span className="font-display text-2xl font-extrabold tracking-tight text-bone">
           {formatBRL(total)}
         </span>
+      </div>
+
+      {/* Selo de garantia */}
+      <div className="mt-5 flex items-center gap-4 rounded-2xl border border-red-700/25 bg-red-600/[0.06] p-4">
+        <div className="relative flex-shrink-0">
+          <div className="absolute inset-0 rounded-full bg-red-600/20 blur-lg" aria-hidden="true" />
+          <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-red-700/40 bg-gradient-to-br from-red-600/20 to-red-700/5">
+            <div className="flex h-[3.4rem] w-[3.4rem] flex-col items-center justify-center rounded-full border-2 border-dashed border-red-500/40 text-red-500">
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+              <span className="font-display text-base font-extrabold leading-none text-bone">{guaranteeDays}</span>
+              <span className="text-[7px] font-bold uppercase tracking-[0.16em] text-red-400">dias</span>
+            </div>
+          </div>
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-bold text-bone">Garantia de {guaranteeDays} dias</p>
+          <p className="mt-0.5 text-xs leading-relaxed text-bone/55">
+            Não curtiu? Devolvemos 100% do seu dinheiro, sem burocracia.
+          </p>
+        </div>
       </div>
     </div>
   );

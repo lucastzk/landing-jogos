@@ -22,7 +22,7 @@ export default async function CheckoutPage() {
 
       {/* Topo */}
       <header className="relative border-b border-line/70">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-5 py-4">
+        <div className="mx-auto flex max-w-4xl items-center justify-center px-5 py-4 sm:justify-start">
           <Link href="/" className="flex items-center gap-2">
             {checkout.logoImage ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -30,7 +30,7 @@ export default async function CheckoutPage() {
                 src={checkout.logoImage}
                 alt={checkout.brandName}
                 style={{ height: `${checkout.logoHeight}px` }}
-                className="w-auto max-w-[60%] object-contain sm:max-w-[340px]"
+                className="w-auto max-w-[70%] object-contain sm:max-w-[340px]"
               />
             ) : (
               <span className="font-display text-lg font-extrabold tracking-tight text-bone">
@@ -38,12 +38,6 @@ export default async function CheckoutPage() {
               </span>
             )}
           </Link>
-          <span className="flex items-center gap-1.5 text-xs font-medium text-bone/50">
-            <svg className="h-4 w-4 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
-            Compra segura
-          </span>
         </div>
       </header>
 
