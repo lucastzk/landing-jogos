@@ -92,6 +92,7 @@ export default function Interactions() {
     // ---------- Loop único ----------
     let rafId = 0;
     let last = 0;
+    let revealAccum = 0;
     const loop = (t: number) => {
       lenis.raf(t);
       const dt = last ? Math.min(0.05, (t - last) / 1000) : 0;
@@ -111,8 +112,11 @@ export default function Interactions() {
         el.style.transform = `translate3d(0, ${(-offset * speed).toFixed(2)}px, 0)`;
       }
 
-      // Reveal: revela cada elemento quando o topo dele entra na viewport.
-      if (revealEls.length) {
+      // Reveal: revela cada elemento quando o topo entra na viewport. Checado a
+      // cada ~100ms (não todo frame) pra não pesar/travar o scroll.
+      revealAccum += dt;
+      if (revealAccum > 0.1 && revealEls.length) {
+        revealAccum = 0;
         revealEls = revealEls.filter((el) => {
           if (el.getBoundingClientRect().top < vh * 0.9) {
             el.classList.add("in-view");
@@ -138,14 +142,17 @@ export default function Interactions() {
     };
     rafId = requestAnimationFrame(loop);
 
-    // Rede de segurança: se por QUALQUER motivo o reveal não acontecer (ex.:
-    // scroll travado ao voltar de outra página), revela TUDO após um tempo —
-    // garante que nada fique invisível.
+    // Rede de segurança (1,5s): revela só o que já está NA TELA ou acima — pra
+    // o topo nunca ficar preso invisível ao voltar de outra página. O conteúdo
+    // mais abaixo continua sendo revelado COM animação pelo loop, ao rolar.
     const safetyTimer = window.setTimeout(() => {
+      const vh = window.innerHeight;
       document
-        .querySelectorAll("[data-reveal]:not(.in-view), .mask:not(.in-view)")
-        .forEach((el) => el.classList.add("in-view"));
-    }, 2500);
+        .querySelectorAll<HTMLElement>("[data-reveal]:not(.in-view), .mask:not(.in-view)")
+        .forEach((el) => {
+          if (el.getBoundingClientRect().top < vh) el.classList.add("in-view");
+        });
+    }, 1500);
 
     const onResize = () => marquees.forEach((m) => (m.half = m.track.scrollWidth / 2));
     window.addEventListener("resize", onResize);
