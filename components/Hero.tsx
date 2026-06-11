@@ -15,7 +15,7 @@ export default function Hero({ site }: { site: SiteConfig }) {
         aria-hidden="true"
       />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-14 px-5 pb-24 pt-36 sm:px-6 lg:grid-cols-[1.05fr,0.95fr] lg:pb-28 lg:pt-44">
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-10 px-5 pb-20 pt-28 sm:gap-14 sm:px-6 sm:pb-24 sm:pt-36 lg:grid-cols-[1.05fr,0.95fr] lg:pb-28 lg:pt-44">
         {/* Texto */}
         <div>
           <div
@@ -29,7 +29,7 @@ export default function Hero({ site }: { site: SiteConfig }) {
           </div>
 
           {/* Headline em linhas com reveal por máscara */}
-          <h1 className="font-display text-[3.4rem] font-extrabold leading-[0.98] tracking-tighter sm:text-6xl lg:text-7xl">
+          <h1 className="font-display text-[3.1rem] font-extrabold leading-[0.98] tracking-tighter sm:text-6xl lg:text-7xl">
             {hero.headlineLines.map((line, i) => (
               <span key={i} className="mask" data-delay={String(Math.min(i + 1, 3))}>
                 <span

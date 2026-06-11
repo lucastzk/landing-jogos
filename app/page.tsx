@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   const site = await getSite();
   return (
-    <main className="pb-20 lg:pb-0">
+    <main className="pb-28 lg:pb-0">
       <Header site={site} />
       {/* 1. HERO */}
       <Hero site={site} />
