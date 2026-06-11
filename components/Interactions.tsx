@@ -55,11 +55,6 @@ export default function Interactions() {
     );
     const marquees = marqueeTracks.map((track) => ({ track, x: 0, half: 0 }));
 
-    // Elementos que aparecem ao entrar na viewport. Revelar é feito DENTRO do
-    // loop (posição real) em vez de IntersectionObserver — assim funciona com o
-    // Lenis e também ao VOLTAR de outra página (onde o observer não re-dispara).
-    let revealEls = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal], .mask"));
-
     const bar = document.createElement("div");
     bar.className = "scroll-progress";
     document.body.appendChild(bar);
@@ -92,7 +87,6 @@ export default function Interactions() {
     // ---------- Loop único ----------
     let rafId = 0;
     let last = 0;
-    let revealAccum = 0;
     const loop = (t: number) => {
       lenis.raf(t);
       const dt = last ? Math.min(0.05, (t - last) / 1000) : 0;
@@ -112,20 +106,6 @@ export default function Interactions() {
         el.style.transform = `translate3d(0, ${(-offset * speed).toFixed(2)}px, 0)`;
       }
 
-      // Reveal: revela cada elemento quando o topo entra na viewport. Checado a
-      // cada ~100ms (não todo frame) pra não pesar/travar o scroll.
-      revealAccum += dt;
-      if (revealAccum > 0.1 && revealEls.length) {
-        revealAccum = 0;
-        revealEls = revealEls.filter((el) => {
-          if (el.getBoundingClientRect().top < vh * 0.9) {
-            el.classList.add("in-view");
-            return false; // revelado → sai da lista
-          }
-          return true;
-        });
-      }
-
       // Marquees: velocidade base + empurrão pela velocidade do scroll
       const push = vel * 0.9;
       for (const m of marquees) {
@@ -142,17 +122,41 @@ export default function Interactions() {
     };
     rafId = requestAnimationFrame(loop);
 
-    // Rede de segurança (1,5s): revela só o que já está NA TELA ou acima — pra
-    // o topo nunca ficar preso invisível ao voltar de outra página. O conteúdo
-    // mais abaixo continua sendo revelado COM animação pelo loop, ao rolar.
+    // ---------- Reveal ----------
+    // Carregamento normal: IntersectionObserver revela ao rolar (com animação).
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in-view");
+            io.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+    );
+    document.querySelectorAll("[data-reveal], .mask").forEach((el) => io.observe(el));
+
+    // Ao VOLTAR de outra página (checkout → Voltar) o observer pode não revelar.
+    // Detectamos back/forward E restauração de cache (bfcache) e revelamos TUDO
+    // na hora — assim nada fica invisível (sem animação nesse caso, tudo bem).
+    const revealAll = () =>
+      document.querySelectorAll("[data-reveal], .mask").forEach((el) => el.classList.add("in-view"));
+    const navEntry = performance.getEntriesByType("navigation")[0] as
+      | PerformanceNavigationTiming
+      | undefined;
+    if (navEntry?.type === "back_forward") revealAll();
+    const onPageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) revealAll();
+    };
+    window.addEventListener("pageshow", onPageShow);
+
+    // Rede de segurança: se depois de 3s NADA tiver sido revelado (o reveal
+    // falhou por completo), revela tudo. Se já houve reveal, não mexe — assim
+    // a animação ao rolar é preservada no uso normal.
     const safetyTimer = window.setTimeout(() => {
-      const vh = window.innerHeight;
-      document
-        .querySelectorAll<HTMLElement>("[data-reveal]:not(.in-view), .mask:not(.in-view)")
-        .forEach((el) => {
-          if (el.getBoundingClientRect().top < vh) el.classList.add("in-view");
-        });
-    }, 1500);
+      if (!document.querySelector("[data-reveal].in-view, .mask.in-view")) revealAll();
+    }, 3000);
 
     const onResize = () => marquees.forEach((m) => (m.half = m.track.scrollWidth / 2));
     window.addEventListener("resize", onResize);
@@ -162,6 +166,8 @@ export default function Interactions() {
       clearTimeout(safetyTimer);
       document.removeEventListener("click", onAnchor);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("pageshow", onPageShow);
+      io.disconnect();
       bar.remove();
       lenis.destroy();
     });
