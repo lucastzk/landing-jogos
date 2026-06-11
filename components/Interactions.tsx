@@ -136,13 +136,19 @@ export default function Interactions() {
     );
     document.querySelectorAll("[data-reveal], .mask").forEach((el) => io.observe(el));
 
-    // bfcache: ao VOLTAR do checkout (botão Voltar), o navegador restaura a
-    // página do cache e as animações de reveal NÃO re-disparam — o conteúdo
-    // ficaria invisível. Este handler garante que tudo apareça nesse caso.
+    // Ao VOLTAR do checkout (botão Voltar), as animações de reveal NÃO
+    // re-disparam e o conteúdo ficaria invisível. Cobrimos os 2 casos:
+    //  - reload de back/forward → navigation.type === "back_forward"
+    //  - restauração do cache (bfcache) → pageshow com e.persisted
+    // Em ambos, revelamos tudo na hora.
+    const revealAll = () =>
+      document.querySelectorAll("[data-reveal], .mask").forEach((el) => el.classList.add("in-view"));
+    const navEntry = performance.getEntriesByType("navigation")[0] as
+      | PerformanceNavigationTiming
+      | undefined;
+    if (navEntry?.type === "back_forward") revealAll();
     const onPageShow = (e: PageTransitionEvent) => {
-      if (e.persisted) {
-        document.querySelectorAll("[data-reveal], .mask").forEach((el) => el.classList.add("in-view"));
-      }
+      if (e.persisted) revealAll();
     };
     window.addEventListener("pageshow", onPageShow);
 
