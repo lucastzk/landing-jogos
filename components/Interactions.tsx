@@ -55,6 +55,11 @@ export default function Interactions() {
     );
     const marquees = marqueeTracks.map((track) => ({ track, x: 0, half: 0 }));
 
+    // Elementos que aparecem ao entrar na viewport. Revelar é feito DENTRO do
+    // loop (posição real) em vez de IntersectionObserver — assim funciona com o
+    // Lenis e também ao VOLTAR de outra página (onde o observer não re-dispara).
+    let revealEls = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal], .mask"));
+
     const bar = document.createElement("div");
     bar.className = "scroll-progress";
     document.body.appendChild(bar);
@@ -106,6 +111,17 @@ export default function Interactions() {
         el.style.transform = `translate3d(0, ${(-offset * speed).toFixed(2)}px, 0)`;
       }
 
+      // Reveal: revela cada elemento quando o topo dele entra na viewport.
+      if (revealEls.length) {
+        revealEls = revealEls.filter((el) => {
+          if (el.getBoundingClientRect().top < vh * 0.9) {
+            el.classList.add("in-view");
+            return false; // revelado → sai da lista
+          }
+          return true;
+        });
+      }
+
       // Marquees: velocidade base + empurrão pela velocidade do scroll
       const push = vel * 0.9;
       for (const m of marquees) {
@@ -122,47 +138,14 @@ export default function Interactions() {
     };
     rafId = requestAnimationFrame(loop);
 
-    // ---------- Reveal no scroll ----------
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("in-view");
-            io.unobserve(entry.target);
-          }
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
-    );
-    document.querySelectorAll("[data-reveal], .mask").forEach((el) => io.observe(el));
-
-    // Ao VOLTAR do checkout (botão Voltar), as animações de reveal NÃO
-    // re-disparam e o conteúdo ficaria invisível. Cobrimos os 2 casos:
-    //  - reload de back/forward → navigation.type === "back_forward"
-    //  - restauração do cache (bfcache) → pageshow com e.persisted
-    // Em ambos, revelamos tudo na hora.
-    const revealAll = () =>
-      document.querySelectorAll("[data-reveal], .mask").forEach((el) => el.classList.add("in-view"));
-    const navEntry = performance.getEntriesByType("navigation")[0] as
-      | PerformanceNavigationTiming
-      | undefined;
-    if (navEntry?.type === "back_forward") revealAll();
-    const onPageShow = (e: PageTransitionEvent) => {
-      if (e.persisted) revealAll();
-    };
-    window.addEventListener("pageshow", onPageShow);
-
-    // Rede de segurança: se por qualquer motivo o reveal não disparar, garante
-    // que nada fique invisível — revela o que está na tela (ou logo abaixo)
-    // após um tempinho, sem matar a animação do conteúdo bem mais abaixo.
+    // Rede de segurança: se por QUALQUER motivo o reveal não acontecer (ex.:
+    // scroll travado ao voltar de outra página), revela TUDO após um tempo —
+    // garante que nada fique invisível.
     const safetyTimer = window.setTimeout(() => {
-      const limit = window.innerHeight + 200;
       document
-        .querySelectorAll<HTMLElement>("[data-reveal]:not(.in-view), .mask:not(.in-view)")
-        .forEach((el) => {
-          if (el.getBoundingClientRect().top < limit) el.classList.add("in-view");
-        });
-    }, 1000);
+        .querySelectorAll("[data-reveal]:not(.in-view), .mask:not(.in-view)")
+        .forEach((el) => el.classList.add("in-view"));
+    }, 2500);
 
     const onResize = () => marquees.forEach((m) => (m.half = m.track.scrollWidth / 2));
     window.addEventListener("resize", onResize);
@@ -172,8 +155,6 @@ export default function Interactions() {
       clearTimeout(safetyTimer);
       document.removeEventListener("click", onAnchor);
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("pageshow", onPageShow);
-      io.disconnect();
       bar.remove();
       lenis.destroy();
     });
