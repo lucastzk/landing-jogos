@@ -81,7 +81,7 @@ export default function VslGate({
         aria-hidden="true"
       />
 
-      <div className="relative z-10 mx-auto w-full max-w-sm">
+      <div className="relative z-10 mx-auto w-full min-w-0 max-w-sm">
         {/* Selo */}
         {badge && (
           <div className="mb-4 flex justify-center">
@@ -108,7 +108,7 @@ export default function VslGate({
             className="absolute -inset-2 rounded-[2rem] bg-gradient-to-b from-red-600/45 via-red-600/10 to-transparent blur-xl"
             aria-hidden="true"
           />
-          <div className="relative mx-auto aspect-[9/16] max-h-[56svh] w-full max-w-[min(360px,80vw)] overflow-hidden rounded-[1.6rem] border border-red-700/40 bg-black shadow-red">
+          <div className="relative mx-auto aspect-[9/16] max-h-[56svh] w-full max-w-[20rem] overflow-hidden rounded-[1.6rem] border border-red-700/40 bg-black shadow-red">
             {!videoUrl ? (
               <div className="flex h-full w-full items-center justify-center p-6 text-center">
                 <p className="text-sm text-bone/50">
