@@ -92,7 +92,7 @@ export default function VslGate({
 
         {/* Gancho */}
         {headline && (
-          <h1 className="mx-auto w-full max-w-md text-balance text-center font-display text-[clamp(1.2rem,5.5vw,2rem)] font-extrabold leading-[1.08] tracking-tight text-bone">
+          <h1 className="mx-auto w-full max-w-[19rem] break-words text-center font-display text-[1.4rem] font-extrabold leading-[1.12] tracking-tight text-bone sm:max-w-md sm:text-[2rem]">
             {headline}
           </h1>
         )}
