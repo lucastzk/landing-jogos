@@ -25,14 +25,17 @@ export default function Interactions() {
     captureTracking();
     decorateCheckoutLinks();
 
-    // ---------- Lenis ----------
-    const lenis = new Lenis({
-      duration: 1.25,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 1.8,
-    });
+    // ---------- Lenis (só no DESKTOP) ----------
+    // No celular o scroll NATIVO é mais leve e fluido; o Lenis intercepta o toque
+    // e roda recálculo a cada frame, pesando o render no mobile. Por isso: off.
+    const lenis = fine
+      ? new Lenis({
+          duration: 1.25,
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          smoothWheel: true,
+          wheelMultiplier: 1,
+        })
+      : null;
 
     // Âncoras com scroll suave
     const onAnchor = (e: Event) => {
@@ -43,7 +46,12 @@ export default function Interactions() {
         const target = document.querySelector(id);
         if (target) {
           e.preventDefault();
-          lenis.scrollTo(target as HTMLElement, { offset: -80 });
+          if (lenis) {
+            lenis.scrollTo(target as HTMLElement, { offset: -80 });
+          } else {
+            const y = (target as HTMLElement).getBoundingClientRect().top + window.scrollY - 80;
+            window.scrollTo({ top: y, behavior: "smooth" });
+          }
         }
       }
     };
@@ -60,7 +68,11 @@ export default function Interactions() {
     document.addEventListener("click", onCheckoutClick);
 
     // ---------- Coleta de elementos ----------
-    const parallaxEls = Array.from(document.querySelectorAll<HTMLElement>("[data-parallax]"));
+    // Parallax só no desktop: ler getBoundingClientRect de cada elemento a cada
+    // frame trava o scroll no celular. No mobile os elementos ficam estáticos.
+    const parallaxEls = fine
+      ? Array.from(document.querySelectorAll<HTMLElement>("[data-parallax]"))
+      : [];
     const marqueeTracks = Array.from(
       document.querySelectorAll<HTMLElement>("[data-marquee] .marquee__track")
     );
@@ -99,15 +111,18 @@ export default function Interactions() {
     let rafId = 0;
     let last = 0;
     const loop = (t: number) => {
-      lenis.raf(t);
+      if (lenis) lenis.raf(t);
       const dt = last ? Math.min(0.05, (t - last) / 1000) : 0;
       last = t;
 
       const vh = window.innerHeight;
-      const vel = lenis.velocity || 0;
+      const vel = lenis ? lenis.velocity || 0 : 0;
 
-      // Barra de progresso
-      bar.style.width = `${(lenis.progress || 0) * 100}%`;
+      // Barra de progresso (Lenis no desktop; scroll nativo no celular)
+      const prog = lenis
+        ? lenis.progress || 0
+        : window.scrollY / Math.max(1, document.documentElement.scrollHeight - vh);
+      bar.style.width = `${prog * 100}%`;
 
       // Parallax (relativo à posição na tela → funciona na página toda)
       for (const el of parallaxEls) {
@@ -146,7 +161,7 @@ export default function Interactions() {
       document.removeEventListener("click", onCheckoutClick);
       window.removeEventListener("resize", onResize);
       bar.remove();
-      lenis.destroy();
+      if (lenis) lenis.destroy();
     });
 
     return () => cleanups.forEach((fn) => fn());
