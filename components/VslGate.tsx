@@ -166,6 +166,18 @@ export default function VslGate({
                   onClick={handleClick}
                   className="h-full w-full cursor-pointer object-cover"
                 />
+                {!playing && poster && (
+                  // Capa como <img> POR CIMA do vídeo até ele tocar. Garante que o
+                  // celular nunca mostre preto — não depende do atributo `poster`
+                  // do <video>, que o iOS troca pelo 1º frame (preto) ao pré-carregar.
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={poster}
+                    alt=""
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+                  />
+                )}
                 {muted && (
                   <button
                     type="button"
