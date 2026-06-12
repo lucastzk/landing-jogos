@@ -52,6 +52,18 @@ export default function VslGate({
     }
   }, [videoUrl, revealAfterSeconds, isFile]);
 
+  // iOS / navegador in-app (WhatsApp, Instagram): garante o MUDO antes do
+  // autoplay e tenta tocar via JS. Sem isso o iOS costuma bloquear o autoplay
+  // e a moldura fica preta. Se mesmo assim bloquear, o toque na tela inicia.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || !isFile) return;
+    v.muted = true;
+    v.setAttribute("muted", "");
+    const p = v.play();
+    if (p && typeof p.catch === "function") p.catch(() => {});
+  }, [videoUrl, isFile]);
+
   // Clique no vídeo (ou no ícone): se está mudo, ATIVA o som e REINICIA o vídeo
   // (pra ouvir o áudio do começo). Se já está com som, apenas muta.
   const handleClick = () => {
@@ -138,6 +150,7 @@ export default function VslGate({
                   autoPlay
                   muted
                   playsInline
+                  preload="auto"
                   onTimeUpdate={(e) => {
                     const v = e.currentTarget;
                     // Libera o botão faltando REVEAL_BEFORE_END_SEC s para o fim.
@@ -157,9 +170,9 @@ export default function VslGate({
                     aria-label="Ativar som e reiniciar o vídeo"
                   >
                     {/* Botão de som — vidro fosco com leve brilho vermelho (discreto, deixa o vídeo aparecer) */}
-                    <span className="relative flex h-[3.4rem] w-[3.4rem] items-center justify-center rounded-full bg-black/40 shadow-lg ring-1 ring-white/25 backdrop-blur-md transition-transform duration-200 group-active:scale-95">
-                      <span className="absolute -inset-1.5 -z-10 rounded-full bg-red-500/30 blur-md" aria-hidden="true" />
-                      <span className="absolute inset-0 animate-ping rounded-full bg-white/10" aria-hidden="true" />
+                    <span className="relative flex h-[3.6rem] w-[3.6rem] items-center justify-center rounded-full bg-black/55 shadow-lg ring-1 ring-white/45 backdrop-blur-md transition-transform duration-200 group-active:scale-95">
+                      <span className="absolute -inset-2 -z-10 rounded-full bg-red-500/50 blur-lg" aria-hidden="true" />
+                      <span className="absolute inset-0 animate-ping rounded-full bg-red-400/25" aria-hidden="true" />
                       <svg className="relative h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M11 5 6 9H3v6h3l5 4z" />
                         <line x1="22" y1="9" x2="16" y2="15" />
