@@ -16,9 +16,13 @@ function buildEmbed(url: string): string {
   return url;
 }
 
+/** Segundos antes do FIM do vídeo em que o botão de acesso é liberado. */
+const REVEAL_BEFORE_END_SEC = 18;
+
 /**
  * Página VSL (vídeo-porteiro): vídeo vertical roda sozinho MUDO; clicar na tela
- * ativa o som; o botão que leva à landing só aparece quando o vídeo termina.
+ * ativa o som; o botão que leva à landing aparece faltando REVEAL_BEFORE_END_SEC
+ * segundos pro vídeo acabar (e no fim, como garantia).
  */
 export default function VslGate({
   vslPage,
@@ -134,6 +138,13 @@ export default function VslGate({
                   autoPlay
                   muted
                   playsInline
+                  onTimeUpdate={(e) => {
+                    const v = e.currentTarget;
+                    // Libera o botão faltando REVEAL_BEFORE_END_SEC s para o fim.
+                    if (v.duration && isFinite(v.duration) && v.duration - v.currentTime <= REVEAL_BEFORE_END_SEC) {
+                      setRevealed(true);
+                    }
+                  }}
                   onEnded={() => setRevealed(true)}
                   onClick={handleClick}
                   className="h-full w-full cursor-pointer object-cover"
