@@ -55,7 +55,7 @@ export default function LandingEditor({ value, onChange }: Props) {
           value={value.vsl.videoUrl}
           onChange={(url) => sec("vsl", { videoUrl: url })}
           kind="any"
-          accept="video/mp4,video/webm"
+          accept="video/mp4,video/webm,video/quicktime,video/x-m4v,.mov,.m4v"
           hint="Aceita YouTube, Vimeo ou .mp4."
         />
         <MediaField label="Capa do vídeo (poster)" value={value.vsl.poster} onChange={(url) => sec("vsl", { poster: url })} />
@@ -76,7 +76,7 @@ export default function LandingEditor({ value, onChange }: Props) {
           value={value.vslPage.videoUrl}
           onChange={(url) => sec("vslPage", { videoUrl: url })}
           kind="any"
-          accept="video/mp4,video/webm"
+          accept="video/mp4,video/webm,video/quicktime,video/x-m4v,.mov,.m4v"
           hint="Vertical (9:16). .mp4 é o ideal: autoplay mudo, clique para desmutar e libera o botão no fim do vídeo."
         />
         <MediaField label="Capa do vídeo (poster, opcional)" value={value.vslPage.poster} onChange={(url) => sec("vslPage", { poster: url })} />

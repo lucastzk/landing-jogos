@@ -19,6 +19,8 @@ const ALLOWED: Record<string, string> = {
   "image/avif": "avif",
   "video/mp4": "mp4",
   "video/webm": "webm",
+  "video/quicktime": "mov", // .MOV do iPhone
+  "video/x-m4v": "m4v",
 };
 
 export async function POST(req: Request) {
