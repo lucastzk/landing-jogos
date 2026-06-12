@@ -142,18 +142,20 @@ export default function VslGate({
                   <button
                     type="button"
                     onClick={handleClick}
-                    className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/35"
+                    className="group absolute inset-0 flex flex-col items-center justify-center gap-3.5 bg-black/20"
                     aria-label="Ativar som e reiniciar o vídeo"
                   >
-                    {/* Ícone de mute nas cores do site: speaker + barra, círculo vermelho pulsante */}
-                    <span className="relative flex h-[4.75rem] w-[4.75rem] items-center justify-center rounded-full bg-gradient-to-br from-red-600 to-red-500 shadow-red ring-4 ring-red-500/15">
-                      <span className="absolute inset-0 animate-ping rounded-full bg-red-500/40" aria-hidden="true" />
-                      <svg className="relative h-9 w-9 text-white" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M11 5 6 9H3a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h3l5 4V5z" fill="currentColor" />
-                        <path d="M3.2 3.2 20.8 20.8" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+                    {/* Botão de som — vidro fosco com leve brilho vermelho (discreto, deixa o vídeo aparecer) */}
+                    <span className="relative flex h-[3.4rem] w-[3.4rem] items-center justify-center rounded-full bg-black/40 shadow-lg ring-1 ring-white/25 backdrop-blur-md transition-transform duration-200 group-active:scale-95">
+                      <span className="absolute -inset-1.5 -z-10 rounded-full bg-red-500/30 blur-md" aria-hidden="true" />
+                      <span className="absolute inset-0 animate-ping rounded-full bg-white/10" aria-hidden="true" />
+                      <svg className="relative h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M11 5 6 9H3v6h3l5 4z" />
+                        <line x1="22" y1="9" x2="16" y2="15" />
+                        <line x1="16" y1="9" x2="22" y2="15" />
                       </svg>
                     </span>
-                    <span className="rounded-full border border-red-500/40 bg-black/65 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-bone backdrop-blur">
+                    <span className="rounded-full bg-black/55 px-3.5 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/90 backdrop-blur-sm">
                       {unmuteHint}
                     </span>
                   </button>
