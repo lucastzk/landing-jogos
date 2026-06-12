@@ -69,7 +69,7 @@ export async function sendUtmifyOrder(rec: TxRecord, status: UtmifyStatus): Prom
       phone: rec.phone || null,
       document: rec.document || null,
       country: "BR",
-      ip: rec.clientIp || null,
+      ip: rec.clientIp || "0.0.0.0", // UTMify exige ip não-nulo
     },
     products: [
       {
