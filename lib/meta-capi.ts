@@ -16,7 +16,7 @@
 import { createHash } from "crypto";
 
 const GRAPH_VERSION = "v21.0";
-const PIXEL_ID = () => process.env.META_PIXEL_ID || "2083485272577157";
+const PIXEL_ID = () => process.env.META_PIXEL_ID || "1904217793605649";
 const TOKEN = () => process.env.META_CAPI_TOKEN || "";
 // Opcional: código de "Testar eventos" do Gerenciador de Eventos (debug).
 const TEST_CODE = () => process.env.META_CAPI_TEST_CODE || "";
