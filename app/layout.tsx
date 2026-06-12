@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Sora } from "next/font/google";
 import Script from "next/script";
-import { site } from "@/config/site";
+import { getSite } from "@/lib/content";
 import Interactions from "@/components/Interactions";
 import "./globals.css";
 
@@ -21,29 +21,35 @@ const sora = Sora({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(site.meta.url),
-  title: site.meta.title,
-  description: site.meta.description,
-  applicationName: site.meta.siteName,
-  keywords: ["produto digital", "acesso imediato", "pagamento único"],
-  openGraph: {
-    type: "website",
-    locale: site.meta.locale,
-    url: site.meta.url,
-    siteName: site.meta.siteName,
-    title: site.meta.title,
-    description: site.meta.description,
-    images: [{ url: site.meta.ogImage, width: 1200, height: 630, alt: site.meta.title }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: site.meta.title,
-    description: site.meta.description,
-    images: [site.meta.ogImage],
-  },
-  robots: { index: true, follow: true },
-};
+// Metadata DINÂMICA: lê as edições do painel (data/content.json) mescladas por
+// cima dos defaults. Antes usava o `config/site.ts` estático, então o título/OG
+// editado no /admin era salvo mas ignorado — a aba mostrava o placeholder.
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSite();
+  return {
+    metadataBase: new URL(s.meta.url),
+    title: s.meta.title,
+    description: s.meta.description,
+    applicationName: s.meta.siteName,
+    keywords: ["produto digital", "acesso imediato", "pagamento único"],
+    openGraph: {
+      type: "website",
+      locale: s.meta.locale,
+      url: s.meta.url,
+      siteName: s.meta.siteName,
+      title: s.meta.title,
+      description: s.meta.description,
+      images: [{ url: s.meta.ogImage, width: 1200, height: 630, alt: s.meta.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: s.meta.title,
+      description: s.meta.description,
+      images: [s.meta.ogImage],
+    },
+    robots: { index: true, follow: true },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#070707",
