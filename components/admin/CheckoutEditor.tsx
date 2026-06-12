@@ -70,6 +70,12 @@ export default function CheckoutEditor({ value, onChange }: Props) {
           <>
             <Txt label="Título" value={value.orderBump.title} onChange={(v) => setBump({ title: v })} />
             <Area label="Descrição" value={value.orderBump.description} onChange={(v) => setBump({ description: v })} rows={2} />
+            <MediaField
+              label="Imagem do order bump (opcional)"
+              value={value.orderBump.image}
+              onChange={(url) => setBump({ image: url })}
+              hint="Aparece como miniatura ao lado da oferta. Vazio = sem imagem."
+            />
             <div className="grid grid-cols-2 gap-3">
               <label className="block">
                 <span className="mb-1 block text-xs font-medium text-bone/50">De (riscado, opcional)</span>

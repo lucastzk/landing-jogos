@@ -35,6 +35,8 @@ export const checkout = {
     title: "Sim! Quero adicionar o complemento",
     description:
       "Leve também o complemento opcional por um valor único. Some ao seu pedido com um clique.",
+    // Imagem opcional (upload pelo painel). Vazio = sem miniatura.
+    image: "",
     // De/Por só para ancoragem REAL. Deixe fromInCents:0 se não houver preço cheio.
     fromInCents: 4700,
     priceInCents: 1700,

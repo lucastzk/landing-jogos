@@ -82,6 +82,7 @@ export type EditableCheckout = {
     enabled: boolean;
     title: string;
     description: string;
+    image: string;
     fromInCents: number;
     priceInCents: number;
   };

@@ -39,6 +39,14 @@ export default function OrderBump({ selected, onToggle }: Props) {
           </svg>
         )}
       </span>
+      {orderBump.image && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={orderBump.image}
+          alt=""
+          className="h-14 w-14 flex-shrink-0 rounded-lg border border-line object-cover"
+        />
+      )}
       <span className="min-w-0 flex-1">
         <span className="block text-sm font-bold text-bone">{orderBump.title}</span>
         <span className="mt-0.5 block text-xs leading-relaxed text-bone/55">{orderBump.description}</span>
