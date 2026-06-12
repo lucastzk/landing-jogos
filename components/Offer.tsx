@@ -64,9 +64,12 @@ export default function Offer({ site }: { site: SiteConfig }) {
           {/* Ancoragem de preço */}
           <div className="relative text-center">
             {hasDiscount && (
-              <div className="flex items-center justify-center gap-2.5 text-bone/50">
-                <span>
-                  De <span className="line-through decoration-red-500/80">{offer.fullPrice}</span>
+              <div className="flex items-center justify-center gap-2.5">
+                <span className="text-base text-bone/55">
+                  De{" "}
+                  <span className="text-xl font-bold text-bone/85 line-through decoration-red-500 decoration-2">
+                    {offer.fullPrice}
+                  </span>
                 </span>
                 <span className="rounded-full bg-red-600/15 px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-red-400">
                   −{discountPct}%
