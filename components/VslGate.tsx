@@ -65,7 +65,7 @@ export default function VslGate({
   };
 
   return (
-    <main className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden bg-black px-4 py-8 sm:py-10">
+    <main className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden bg-black px-3 py-4 sm:py-6">
       {/* Fundo: glow radial + halo + grade de pontos + vinheta */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -89,7 +89,7 @@ export default function VslGate({
         aria-hidden="true"
       />
 
-      <div className="relative z-10 mx-auto w-full min-w-0 max-w-sm">
+      <div className="relative z-10 mx-auto w-full min-w-0 max-w-[26rem]">
         {/* Selo */}
         {badge && (
           <div className="mb-4 flex justify-center">
@@ -111,12 +111,12 @@ export default function VslGate({
         )}
 
         {/* Player vertical 9:16 com moldura iluminada */}
-        <div className="relative mt-6 w-full">
+        <div className="relative mt-4 w-full">
           <div
             className="absolute -inset-2 rounded-[2rem] bg-gradient-to-b from-red-600/45 via-red-600/10 to-transparent blur-xl"
             aria-hidden="true"
           />
-          <div className="relative mx-auto aspect-[9/16] max-h-[56svh] w-full max-w-[20rem] overflow-hidden rounded-[1.6rem] border border-red-700/40 bg-black shadow-red">
+          <div className="relative mx-auto aspect-[9/16] max-h-[72svh] w-full max-w-[26rem] overflow-hidden rounded-[1.6rem] border border-red-700/40 bg-black shadow-red">
             {!videoUrl ? (
               <div className="flex h-full w-full items-center justify-center p-6 text-center">
                 <p className="text-sm text-bone/50">
@@ -170,7 +170,7 @@ export default function VslGate({
         </div>
 
         {/* Botão + selos (no fim) — ou aviso de aguardar */}
-        <div className="mt-7 flex w-full flex-col items-center">
+        <div className="mt-5 flex w-full flex-col items-center">
           {revealed ? (
             <div className="flex w-full flex-col items-center" style={{ animation: "revealIn 0.55s var(--ease) both" }}>
               <a
