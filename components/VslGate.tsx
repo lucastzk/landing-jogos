@@ -128,15 +128,15 @@ export default function VslGate({
           <p className="mx-auto mt-2.5 max-w-sm text-center text-sm leading-relaxed text-bone/55">{subheadline}</p>
         )}
 
-        {/* Player vertical 9:16 (1080x1920) — dimensionado pela ALTURA; a largura
-            sai da proporção, garantindo 9:16 EXATO (sem achatar) em qualquer tela. */}
-        <div className="mt-4 flex w-full justify-center">
-          <div className="relative inline-block max-w-full">
-            <div
-              className="absolute -inset-2 rounded-[2rem] bg-gradient-to-b from-red-600/45 via-red-600/10 to-transparent blur-xl"
-              aria-hidden="true"
-            />
-            <div className="relative aspect-[9/16] h-[70svh] max-w-full overflow-hidden rounded-[1.6rem] border border-red-700/40 bg-black shadow-red">
+        {/* Player vertical 9:16 (1080x1920) — dimensionado pela LARGURA (confiável
+            no Safari/iOS, que não calcula bem largura-auto a partir da altura);
+            a altura sai da proporção, garantindo 9:16 exato. */}
+        <div className="relative mt-4 w-full">
+          <div
+            className="absolute -inset-2 rounded-[2rem] bg-gradient-to-b from-red-600/45 via-red-600/10 to-transparent blur-xl"
+            aria-hidden="true"
+          />
+          <div className="relative mx-auto aspect-[9/16] w-full max-w-[21rem] overflow-hidden rounded-[1.6rem] border border-red-700/40 bg-black shadow-red">
             {!videoUrl ? (
               <div className="flex h-full w-full items-center justify-center p-6 text-center">
                 <p className="text-sm text-bone/50">
@@ -218,7 +218,6 @@ export default function VslGate({
                 allowFullScreen
               />
             )}
-            </div>
           </div>
         </div>
 
