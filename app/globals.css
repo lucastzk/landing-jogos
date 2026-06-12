@@ -206,4 +206,11 @@ html.lenis body {
   /* não promover camadas à toa (economiza memória de GPU no celular) */
   .lift,
   .marquee__track { will-change: auto; }
+  /* blurs grandes (utilitários Tailwind) reduzidos — paint MUITO mais barato no iOS */
+  .blur-3xl { filter: blur(22px); }
+  .blur-2xl { filter: blur(16px); }
+  .blur-\[100px\] { filter: blur(26px); }
+  /* sombras vermelhas mais leves (box-shadow colorido é caro de pintar no iOS) */
+  .shadow-red,
+  .shadow-red-soft { box-shadow: 0 10px 28px -14px rgba(240, 16, 16, 0.4); }
 }
