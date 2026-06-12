@@ -102,6 +102,15 @@ fbq('track', 'PageView');`,
           data-utmify-prevent-subids=""
           strategy="afterInteractive"
         />
+        {/* UTMify Pixel — rastreia conversões/vendas no painel da UTMify */}
+        <Script id="utmify-pixel" strategy="afterInteractive">
+          {`window.pixelId = "6a2c4611b4f237fa217953ea";
+var a = document.createElement("script");
+a.setAttribute("async", "");
+a.setAttribute("defer", "");
+a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+document.head.appendChild(a);`}
+        </Script>
       </body>
     </html>
   );
