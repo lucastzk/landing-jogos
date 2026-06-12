@@ -28,13 +28,15 @@ export default function VslGate({
   vslPage,
   ctaHref,
 }: {
-  vslPage: SiteConfig["vslPage"];
+  // videoUrl/poster vêm com fallback dinâmico (string), os demais campos mantêm o tipo.
+  vslPage: Omit<SiteConfig["vslPage"], "videoUrl" | "poster"> & { videoUrl: string; poster: string };
   ctaHref: string;
 }) {
   const { badge, headline, subheadline, videoUrl, poster, ctaLabel, unmuteHint, trustBadges, revealAfterSeconds } =
     vslPage;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
+  const [playing, setPlaying] = useState(false);
   const [revealed, setRevealed] = useState(false);
 
   const isFile = isFileUrl(videoUrl);
@@ -151,6 +153,8 @@ export default function VslGate({
                   muted
                   playsInline
                   preload="auto"
+                  onPlaying={() => setPlaying(true)}
+                  onPause={() => setPlaying(false)}
                   onTimeUpdate={(e) => {
                     const v = e.currentTarget;
                     // Libera o botão faltando REVEAL_BEFORE_END_SEC s para o fim.
@@ -166,21 +170,29 @@ export default function VslGate({
                   <button
                     type="button"
                     onClick={handleClick}
-                    className="group absolute inset-0 flex flex-col items-center justify-center gap-3.5 bg-black/20"
-                    aria-label="Ativar som e reiniciar o vídeo"
+                    className="group absolute inset-0 flex flex-col items-center justify-center gap-3.5 bg-black/25"
+                    aria-label={playing ? "Ativar o som" : "Tocar o vídeo"}
                   >
-                    {/* Botão de som — vidro fosco com leve brilho vermelho (discreto, deixa o vídeo aparecer) */}
-                    <span className="relative flex h-[3.6rem] w-[3.6rem] items-center justify-center rounded-full bg-black/55 shadow-lg ring-1 ring-white/45 backdrop-blur-md transition-transform duration-200 group-active:scale-95">
-                      <span className="absolute -inset-2 -z-10 rounded-full bg-red-500/50 blur-lg" aria-hidden="true" />
-                      <span className="absolute inset-0 animate-ping rounded-full bg-red-400/25" aria-hidden="true" />
-                      <svg className="relative h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M11 5 6 9H3v6h3l5 4z" />
-                        <line x1="22" y1="9" x2="16" y2="15" />
-                        <line x1="16" y1="9" x2="22" y2="15" />
-                      </svg>
+                    {/* Vidro fosco + brilho vermelho forte (bem visível sobre a capa). */}
+                    <span className="relative flex h-[4.4rem] w-[4.4rem] items-center justify-center rounded-full bg-black/55 shadow-lg ring-1 ring-white/55 backdrop-blur-md transition-transform duration-200 group-active:scale-95">
+                      <span className="absolute -inset-2 -z-10 rounded-full bg-red-500/60 blur-lg" aria-hidden="true" />
+                      <span className="absolute inset-0 animate-ping rounded-full bg-red-400/30" aria-hidden="true" />
+                      {playing ? (
+                        // Vídeo tocando mudo → ícone de som cortado (toque pra ativar som)
+                        <svg className="relative h-7 w-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M11 5 6 9H3v6h3l5 4z" />
+                          <line x1="22" y1="9" x2="16" y2="15" />
+                          <line x1="16" y1="9" x2="22" y2="15" />
+                        </svg>
+                      ) : (
+                        // Vídeo parado (celular bloqueou autoplay) → ícone de PLAY
+                        <svg className="relative ml-1 h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      )}
                     </span>
-                    <span className="rounded-full bg-black/55 px-3.5 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/90 backdrop-blur-sm">
-                      {unmuteHint}
+                    <span className="rounded-full bg-black/60 px-4 py-1.5 text-[0.72rem] font-bold uppercase tracking-[0.14em] text-white backdrop-blur-sm">
+                      {playing ? unmuteHint : "Toque para assistir"}
                     </span>
                   </button>
                 )}

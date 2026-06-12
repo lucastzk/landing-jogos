@@ -18,10 +18,13 @@ export default async function VslPage() {
   // VSL da landing. Evita que a /vsl fique VAZIA quando o cliente preenche só um
   // dos dois campos de vídeo do painel (confusão comum). O campo próprio, quando
   // preenchido, tem prioridade — então dá pra usar um vídeo vertical só aqui.
+  // Capa: usa a do painel; se vazia (ex.: foi apagada ao salvar), cai numa capa
+  // padrão gerada do próprio vídeo (/uploads/vsl-poster.jpg). Garante que a
+  // moldura NUNCA fique preta no celular quando o autoplay é bloqueado.
   const vslPage = {
     ...site.vslPage,
     videoUrl: site.vslPage.videoUrl || site.vsl.videoUrl,
-    poster: site.vslPage.poster || site.vsl.poster,
+    poster: site.vslPage.poster || site.vsl.poster || "/uploads/vsl-poster.jpg",
   };
 
   // Depois do vídeo, o botão leva para a landing (mesma aba).
