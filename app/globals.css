@@ -166,3 +166,44 @@ html.lenis body {
   align-items: center;
   will-change: transform;
 }
+
+/* ---------------- Depoimentos: coluna em rolagem vertical (CSS) ----------------
+   Antes era Framer Motion (JS, RAF infinito) movendo cards .glass — travava o
+   iPhone. Agora é animação CSS (compositor, barata). Desligada no mobile abaixo. */
+@keyframes vmarquee {
+  to { transform: translateY(-50%); }
+}
+.vmarquee {
+  animation: vmarquee var(--vdur, 20s) linear infinite;
+}
+
+/* ============================================================================
+   MOBILE (toque): corta os efeitos que matam o FPS do Safari no iPhone.
+   backdrop-filter (glass), blurs grandes animados e animações infinitas são
+   recompostos a cada frame no scroll. Aqui zeramos esse custo no celular —
+   o visual no DESKTOP fica intacto.
+   ========================================================================== */
+@media (pointer: coarse) {
+  /* backdrop-filter é o efeito mais caro no iOS → vira cor sólida (mesmo look) */
+  .glass {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(22, 22, 26, 0.66);
+  }
+  /* animações infinitas desligadas (aurora/float/blink/ping/pulse + depoimentos) */
+  .animate-aurora,
+  .animate-float,
+  .animate-float-slow,
+  .animate-float-x,
+  .animate-blink,
+  .animate-pulse,
+  .animate-ping,
+  .vmarquee {
+    animation: none !important;
+  }
+  /* blur de fundo menor e estático (menos área pra GPU pintar) */
+  .aurora { filter: blur(40px); }
+  /* não promover camadas à toa (economiza memória de GPU no celular) */
+  .lift,
+  .marquee__track { will-change: auto; }
+}

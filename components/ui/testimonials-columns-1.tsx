@@ -1,7 +1,4 @@
-"use client";
-
 import React from "react";
-import { motion } from "motion/react";
 
 type Testimonial = {
   text: string;
@@ -10,6 +7,12 @@ type Testimonial = {
   stars?: number;
 };
 
+/**
+ * Coluna de depoimentos em rolagem vertical contínua.
+ * Animação 100% CSS (compositor, barata) — antes era Framer Motion (RAF infinito
+ * em JS) movendo cards .glass com backdrop-blur, o que travava o iPhone.
+ * No mobile a animação é desligada via @media (pointer: coarse) em globals.css.
+ */
 export const TestimonialsColumn = (props: {
   className?: string;
   testimonials: Testimonial[];
@@ -17,15 +20,9 @@ export const TestimonialsColumn = (props: {
 }) => {
   return (
     <div className={props.className}>
-      <motion.div
-        animate={{ translateY: "-50%" }}
-        transition={{
-          duration: props.duration || 10,
-          repeat: Infinity,
-          ease: "linear",
-          repeatType: "loop",
-        }}
-        className="flex flex-col gap-6 pb-6"
+      <div
+        className="vmarquee flex flex-col gap-6 pb-6"
+        style={{ "--vdur": `${props.duration || 20}s` } as React.CSSProperties}
       >
         {new Array(2).fill(0).map((_, index) => (
           <React.Fragment key={index}>
@@ -60,7 +57,7 @@ export const TestimonialsColumn = (props: {
             ))}
           </React.Fragment>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 };
