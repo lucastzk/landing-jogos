@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { parseWebhook, isWebhookSignatureValid, getTransactionStatus } from "@/lib/amplopay";
 import { firePurchaseOnce } from "@/lib/purchase";
+import { fireUtmifyPaidOnce } from "@/lib/utmify";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -47,7 +48,10 @@ export async function POST(req: Request) {
   // Pago: dispara o Purchase server-side (CAPI). Idempotente — se o polling do
   // PIX já enviou, isto vira no-op; e o Meta ainda deduplica pelo event_id.
   // É AQUI que a venda é contada mesmo se o cliente fechou a aba após pagar.
-  if (status === "paid") await firePurchaseOnce(id);
+  if (status === "paid") {
+    await firePurchaseOnce(id); // Meta CAPI
+    await fireUtmifyPaidOnce(id); // UTMify (pedido pago)
+  }
 
   // TODO (produção): se status === "paid", entregar o produto ao cliente.
   // Ex.: enviar e-mail com o link de acesso, marcar pedido como pago no seu DB.

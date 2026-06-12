@@ -9,8 +9,9 @@ import {
   onlyDigits,
 } from "@/lib/format";
 import { createTransaction, AmploPayError } from "@/lib/amplopay";
-import { saveTxRecord } from "@/lib/tx-store";
+import { saveTxRecord, type TxRecord } from "@/lib/tx-store";
 import { firePurchaseOnce } from "@/lib/purchase";
+import { sendUtmifyPending, fireUtmifyPaidOnce } from "@/lib/utmify";
 import { rateLimit, clientIpFromRequest } from "@/lib/rate-limit";
 import type { CreateCheckoutRequest, CreateCheckoutResponse, TrackingParams } from "@/lib/checkout-types";
 
@@ -124,10 +125,10 @@ export async function POST(req: Request): Promise<NextResponse<CreateCheckoutRes
       clientIp,
     });
 
-    // Persiste o necessário para o Purchase server-side (CAPI) no webhook/polling.
+    // Persiste o necessário p/ Purchase (CAPI Meta) e pedido (UTMify) no webhook/polling.
     // O _fbc pode não existir como cookie; reconstruímos a partir do fbclid se preciso.
     const fbc = body.pixel?.fbc || (tracking?.fbclid ? `fb.1.${Date.now()}.${tracking.fbclid}` : undefined);
-    await saveTxRecord({
+    const txRecord: TxRecord = {
       id: tx.id,
       amountInCents,
       currency: "BRL",
@@ -140,10 +141,22 @@ export async function POST(req: Request): Promise<NextResponse<CreateCheckoutRes
       userAgent: req.headers.get("user-agent") || undefined,
       eventSourceUrl: req.headers.get("referer") || undefined,
       createdAtSec: Math.floor(Date.now() / 1000),
-    });
+      tracking,
+      customerName: customer.name.trim(),
+      document: onlyDigits(customer.cpf),
+      method,
+      productId: checkout.product.id,
+    };
+    await saveTxRecord(txRecord);
 
-    // Cartão aprovado na hora já dispara o Purchase server-side (PIX vem pelo webhook).
-    if (tx.status === "paid") await firePurchaseOnce(tx.id);
+    if (tx.status === "paid") {
+      // Cartão aprovado na hora: Purchase (CAPI) + pedido pago (UTMify).
+      await firePurchaseOnce(tx.id);
+      await fireUtmifyPaidOnce(tx.id);
+    } else {
+      // PIX aguardando: registra o pedido na UTMify como "aguardando pagamento".
+      await sendUtmifyPending(txRecord);
+    }
 
     return NextResponse.json<CreateCheckoutResponse>({
       ok: true,

@@ -26,7 +26,15 @@ export type TxRecord = {
   userAgent?: string;
   eventSourceUrl?: string;
   createdAtSec: number;
-  purchaseSent?: boolean; // idempotência do CAPI
+  purchaseSent?: boolean; // idempotência do CAPI (Meta)
+  // --- usados pela integração UTMify ---
+  tracking?: Record<string, string>; // UTMs/src/sck da campanha
+  customerName?: string;
+  document?: string; // CPF (só dígitos)
+  method?: "pix" | "card";
+  productId?: string;
+  isTest?: boolean;
+  utmifyPaidSent?: boolean; // idempotência do "paid" da UTMify
 };
 
 function fileFor(id: string): string {
@@ -66,5 +74,22 @@ export async function unmarkPurchaseSent(id: string): Promise<void> {
   const rec = await readTxRecord(id);
   if (!rec || !rec.purchaseSent) return;
   rec.purchaseSent = false;
+  await saveTxRecord(rec);
+}
+
+/** Marca utmifyPaidSent=true. Retorna false se não existe ou já estava marcado. */
+export async function markUtmifyPaidSent(id: string): Promise<boolean> {
+  const rec = await readTxRecord(id);
+  if (!rec || rec.utmifyPaidSent) return false;
+  rec.utmifyPaidSent = true;
+  await saveTxRecord(rec);
+  return true;
+}
+
+/** Reverte a marca do "paid" da UTMify (quando o envio falhou). */
+export async function unmarkUtmifyPaidSent(id: string): Promise<void> {
+  const rec = await readTxRecord(id);
+  if (!rec || !rec.utmifyPaidSent) return;
+  rec.utmifyPaidSent = false;
   await saveTxRecord(rec);
 }
