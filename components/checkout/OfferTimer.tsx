@@ -106,9 +106,9 @@ export default function OfferTimer({ minutes }: { minutes: number }) {
             className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"
           />
 
-          <div className="relative flex flex-col gap-5 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-8 sm:py-6">
+          <div className="relative flex flex-col gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-8 sm:py-6">
             {/* ESQUERDA — chip + título curto + subcopy fina */}
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2.5 sm:gap-3">
               <span className="inline-flex w-fit items-center gap-2 rounded-full border border-red-700/50 bg-red-600/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-red-400 sm:text-[11px]">
                 {/* Ponto vermelho — firme parado no mobile (animate-ping cai em coarse) */}
                 <span className="relative flex h-1.5 w-1.5">
@@ -128,18 +128,20 @@ export default function OfferTimer({ minutes }: { minutes: number }) {
               </div>
             </div>
 
-            {/* DIREITA — placar de dígitos em blocos (min : seg) */}
-            <div className="flex shrink-0 flex-col items-start gap-1.5 sm:items-end">
+            {/* DIREITA — placar de dígitos em blocos (min : seg).
+               No MOBILE vira uma zona própria: divisor no topo + tudo centralizado
+               (some o vazio lateral que deixava o card torto). No desktop fica à direita. */}
+            <div className="flex w-full shrink-0 flex-col items-center gap-2 border-t border-line/70 pt-4 sm:w-auto sm:items-end sm:gap-1.5 sm:border-t-0 sm:pt-0">
               <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-bone/40">
                 Tempo restante
               </span>
-              <div className="flex items-start gap-1.5 sm:gap-2">
+              <div className="flex items-start gap-2 sm:gap-2">
                 <TimeBlock value={mounted ? mm : "--"} label="min" />
 
                 {/* Separador ":" — fixo (não depende de animação) */}
                 <span
                   aria-hidden="true"
-                  className="flex h-14 items-center font-display text-3xl font-black leading-none text-red-500/80 sm:h-16 sm:text-4xl"
+                  className="flex h-[3.25rem] items-center font-display text-3xl font-black leading-none text-red-500/80 sm:h-16 sm:text-4xl"
                 >
                   :
                 </span>
@@ -178,7 +180,7 @@ export default function OfferTimer({ minutes }: { minutes: number }) {
 function TimeBlock({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex flex-col items-center gap-1.5">
-      <div className="relative flex h-14 min-w-[3.25rem] items-center justify-center rounded-2xl border border-red-700/40 bg-night px-2.5 shadow-soft sm:h-16 sm:min-w-[3.75rem] sm:px-3.5">
+      <div className="relative flex h-[3.25rem] min-w-[3.5rem] items-center justify-center rounded-2xl border border-red-700/40 bg-night px-2.5 shadow-soft sm:h-16 sm:min-w-[3.75rem] sm:px-3.5">
         {/* Topo levemente iluminado p/ dar volume ao bloco (parado) */}
         <span
           aria-hidden="true"
