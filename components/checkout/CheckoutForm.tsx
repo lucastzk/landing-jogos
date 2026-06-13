@@ -385,7 +385,7 @@ function Spinner() {
  * e oferece um botão manual como garantia (caso o navegador bloqueie).
  */
 function SuccessRedirect({ url }: { url: string }) {
-  const REDIRECT_SECONDS = 4;
+  const REDIRECT_SECONDS = 5;
   const [secs, setSecs] = useState(REDIRECT_SECONDS);
 
   useEffect(() => {
