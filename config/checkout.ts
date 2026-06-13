@@ -68,6 +68,18 @@ export const checkout = {
   logoImage: "",
   // Altura da logo no topo do checkout, em pixels (ajustável pelo painel).
   logoHeight: 80,
+
+  // --------------------------------------------------------------------------
+  // ENTREGA — para onde o cliente é redirecionado quando o pagamento é
+  // APROVADO (a pasta com os jogos). Vazio = só mostra a confirmação.
+  // --------------------------------------------------------------------------
+  productUrl: "https://drive.google.com/file/d/1I7e1VIkNV20fqxAbGGUn9nZPSM195Fkv/view",
+
+  // --------------------------------------------------------------------------
+  // URGÊNCIA — contador da oferta no topo do checkout (gera escassez). Em
+  // minutos. 0 = esconde o contador.
+  // --------------------------------------------------------------------------
+  offerTimerMinutes: 15,
 } as const;
 
 export type CheckoutConfig = typeof checkout;

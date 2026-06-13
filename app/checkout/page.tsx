@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getCheckout } from "@/lib/content";
 import CheckoutForm from "@/components/checkout/CheckoutForm";
+import OfferTimer from "@/components/checkout/OfferTimer";
 
 export const metadata: Metadata = {
   title: "Checkout seguro",
@@ -43,6 +44,8 @@ export default async function CheckoutPage() {
 
       {/* Conteúdo */}
       <section className="relative mx-auto max-w-4xl px-5 py-8 sm:py-12">
+        {checkout.offerTimerMinutes > 0 && <OfferTimer minutes={checkout.offerTimerMinutes} />}
+
         <div className="mb-6 text-center">
           <h1 className="font-display text-2xl font-extrabold tracking-tight text-bone sm:text-3xl">
             Finalize sua compra

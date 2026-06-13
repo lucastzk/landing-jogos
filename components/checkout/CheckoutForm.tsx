@@ -178,13 +178,7 @@ export default function CheckoutForm({ checkout }: { checkout: CheckoutConfig })
 
   // -------------------------------------------------------------- ESTADOS FINAIS
   if (step === "success") {
-    return (
-      <ResultCard
-        tone="success"
-        title="Pagamento confirmado! 🎉"
-        text="Recebemos seu pagamento. O acesso ao seu produto foi liberado — confira seu e-mail."
-      />
-    );
+    return <SuccessRedirect url={checkout.productUrl} />;
   }
   if (step === "expired") {
     return (
@@ -382,6 +376,64 @@ function Spinner() {
       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 0 1 8-8V0C5.4 0 0 5.4 0 12h4z" />
     </svg>
+  );
+}
+
+/**
+ * Tela de pagamento aprovado: confirma a compra e redireciona o cliente para a
+ * pasta com os jogos (config `productUrl`). Auto-redireciona em poucos segundos
+ * e oferece um botão manual como garantia (caso o navegador bloqueie).
+ */
+function SuccessRedirect({ url }: { url: string }) {
+  const REDIRECT_SECONDS = 4;
+  const [secs, setSecs] = useState(REDIRECT_SECONDS);
+
+  useEffect(() => {
+    if (!url) return;
+    const tick = setInterval(() => setSecs((s) => (s > 0 ? s - 1 : 0)), 1000);
+    const go = setTimeout(() => {
+      window.location.href = url;
+    }, REDIRECT_SECONDS * 1000);
+    return () => {
+      clearInterval(tick);
+      clearTimeout(go);
+    };
+  }, [url]);
+
+  return (
+    <div className="glass mx-auto max-w-lg rounded-3xl border-line p-8 text-center sm:p-10">
+      <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-green-500/40 bg-green-500/10">
+        <svg className="h-8 w-8 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
+      </div>
+      <h2 className="font-display text-2xl font-extrabold tracking-tight text-bone">
+        Pagamento confirmado! 🎉
+      </h2>
+      <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-bone/60">
+        Recebemos seu pagamento e o acesso foi liberado.
+        {url ? (
+          <>
+            {" "}Você será levado para a página com os jogos em{" "}
+            <span className="font-bold tabular-nums text-bone">{secs}s</span>.
+          </>
+        ) : (
+          " O acesso ao seu produto foi liberado — confira seu e-mail."
+        )}
+      </p>
+
+      {url && (
+        <a
+          href={url}
+          className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-red-700 to-red-500 px-7 py-3.5 text-sm font-bold text-white shadow-red-soft transition-transform active:scale-95"
+        >
+          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+          Acessar meus jogos agora
+        </a>
+      )}
+    </div>
   );
 }
 

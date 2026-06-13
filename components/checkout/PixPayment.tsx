@@ -91,6 +91,19 @@ export default function PixPayment({ transactionId, pix, onStatus }: Props) {
         Abra o app do seu banco, escolha PIX e escaneie o código abaixo.
       </p>
 
+      {/* Aviso: não fechar a página — redireciona sozinho após aprovar */}
+      <div className="mt-5 flex items-start gap-3 rounded-2xl border border-amber-400/40 bg-amber-400/10 p-4 text-left">
+        <svg className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+        <p className="text-sm leading-relaxed text-amber-100/90">
+          <span className="font-bold text-amber-200">Não feche esta página!</span> Faça o pagamento
+          e volte aqui. Assim que for aprovado, você será{" "}
+          <span className="font-bold text-amber-200">redirecionado automaticamente</span> para a
+          página com os jogos.
+        </p>
+      </div>
+
       {/* QR Code */}
       <div className="mx-auto mt-6 w-fit rounded-3xl bg-white p-4 shadow-soft">
         {pix.qrCodeImage ? (
@@ -135,7 +148,7 @@ export default function PixPayment({ transactionId, pix, onStatus }: Props) {
       </div>
 
       <p className="mt-6 text-xs text-bone/40">
-        Assim que o pagamento for confirmado, esta tela atualiza sozinha.
+        Assim que o pagamento for confirmado, esta tela atualiza sozinha e leva você direto aos jogos.
       </p>
     </div>
   );
